@@ -1,0 +1,25 @@
+<div class="card case-info-card mb-4" th:fragment="case-header(caseReport)">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="h4">Case #<span th:text="${caseReport.caseId}">CP-2024-0573</span></h2>
+                <p class="text-muted mb-0">Reported on: <span th:text="${caseReport.reportDate}">June 3, 2024 at 14:23</span></p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <span class="status-badge me-2" th:classappend="'status-' + ${caseReport.status}" th:text="${caseReport.status}">Under Investigation</span>
+<!--                <span th:class="'risk-' + ${case.riskLevel.toLowerCase()}">-->
+<!--                    <i class="fas fa-exclamation-triangle me-1"></i>-->
+<!--                    <span th:text="${case.riskLevel}">High Risk</span>-->
+<!--                </span>-->
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-4">
+                <p class="mb-1"><strong>Location:</strong> <span th:text="${caseReport.locationOfIncident}">1234 Oak Street, Springfield</span></p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>CARS- Child Abuse Report System</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link rel="icon" href="../../static/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+
+    <!-- Fonts and icons -->
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["../static/assets/css/fonts.min.css"],
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/plugins.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/kaiadmin.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/sidebar-override.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/navbar-override.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/public-footer.css}" rel="stylesheet" />
+
+    <style>
+        .action-buttons .btn {
+            padding: 6px 12px;
+            margin: 0 3px;
+        }
+        .action-buttons .btn i {
+            font-size: 14px;
+        }
+        .add-user-button {
+            margin-right: auto !important;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 75px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+        }
+        .status-badge {
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .bt-success {
+            background-color: #2C5530;
+            border-color: #2C5530;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #1e3c21;
+            border-color: #1e3c21;
+            color: white;
+        }
+    </style>
+
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- Include other CSS files -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <div class="main-panel">
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <div class="container">
+            <div class="page-inner">
+                <div class="page-header">
+                    <h3 class="fw-bold mb-3">All Users Registered</h3>
+                    <ul class="breadcrumbs mb-3">
+                        <li class="nav-home">
+                            <a href="#">
+                                <i class="icon-home"></i>
+                            </a>
+                        </li>
+                        <li class="separator">
+                            <i class="icon-arrow-right"></i>
+                        </li>
+                        <li class="separator">
+                            <i class="icon-arrow-right"></i>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h4 class="card-title">Users</h4>
+                                    <i class="fas fa-users me-3"></i>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="userTable" class="display table table-striped table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Gender</th>
+                                            <th>Role</th>
+                                            <th style="width: 10%">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="user : ${users}">
+                                            <td th:text="${user.firstName}"></td>
+                                            <td th:text="${user.lastName}"></td>
+                                            <td th:text="${user.email}"></td>
+                                            <td th:text="${user.gender}"></td>
+                                            <td th:text="${user.role}"></td>
+                                            <!-- Delete Button -->
+                                            <td class="action-buttons">
+                                                <a class="btn btn-danger btn-sm" th:href="@{/api/v1/admin/users/delete/{id}(id=${user.userId})}" onclick="return confirmDelete(event, this.href)" title="Delete">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="~{fragments/public-footer :: public-footer}"></div>
+    </div>
+</div>
+
+<!-- Core JS Libraries from CDN -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Favicon from CDN -->
+<link rel="icon" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/svgs/solid/leaf.svg" type="image/svg+xml">
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTable with full features
+        const userTable = $('#userTable').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "lengthMenu": [5, 10, 25, 50],
+            "pageLength": 5,
+            "columnDefs": [
+                { "orderable": false, "targets": 6 } // Disable sorting for actions column
+            ]
+        });
+
+        // Delete confirmation function
+        function confirmDelete(event, deleteUrl) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Simulate delete operation (replace with actual backend call)
+                    $.ajax({
+                        url: deleteUrl,
+                        method: 'DELETE',
+                        success: function () {
+                            Swal.fire(
+                                'Deleted!',
+                                'The user has been deleted.',
+                                'success'
+                            ).then(() => {
+                                // Reload or remove the row from the table
+                                location.reload();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire(
+                                'Error!',
+                                'Failed to delete the user.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+
+        // Attach delete confirmation to delete buttons
+        $(document).on('click', '.delete-btn', function (event) {
+            const deleteUrl = $(this).attr('data-delete-url');
+            confirmDelete(event, deleteUrl);
+        });
+    });
+
+</script>
+</body>
+</html>

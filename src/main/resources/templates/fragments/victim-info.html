@@ -1,0 +1,103 @@
+<div class="tab-pane fade" id="victim" role="tabpanel" aria-labelledby="victim-tab" th:fragment="victim-info(caseReport)">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card case-info-card">
+                <div class="card-header">
+                    <h3 class="card-title h5 mb-0">Victim Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h4 class="section-title">Personal Details</h4>
+                            <table class="table table-borderless">
+                                <tbody>
+                                <tr>
+                                    <th scope="row" style="width: 40%">Name:</th>
+                                    <td th:text="${caseReport.childFullName}">Emily Martinez</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Date of Birth:</th>
+                                    <td th:text="${caseReport.childDateOfBirth != null ? T(java.time.format.DateTimeFormatter).ofPattern('dd MMMM yyyy').format(caseReport.childDateOfBirth) : 'N/A'}">
+                                        26 May 2025
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Age:</th>
+                                    <td th:text="${caseReport.childDateOfBirth != null ? T(java.time.Period).between(caseReport.childDateOfBirth, T(java.time.LocalDate).now()).getYears() + ' years old' : 'N/A'}">
+                                        7 years old
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th scope="row">Gender:</th>
+                                    <td th:text="${caseReport.childGender}">Female</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Location of Incident:</th>
+                                    <td th:text="${caseReport.locationOfIncident}">Female</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Latitude:</th>
+                                    <td th:text="${caseReport.latitude != null ? caseReport.latitude : 'N/A'}">-1.2921</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Longitude:</th>
+                                    <td th:text="${caseReport.longitude != null ? caseReport.longitude : 'N/A'}">36.8219</td>
+                                </tr>
+
+                                <tr>
+                                    <th scope="row">Date of Incident:</th>
+                                    <td th:text="${caseReport.dateOfIncident != null ? T(java.time.format.DateTimeFormatter).ofPattern('dd MMMM yyyy').format(caseReport.dateOfIncident) : 'N/A'}">
+                                        26 May 2025
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="section-title">Physical/Emotional Condition</h4>
+                        <p th:text="${caseReport.incidentDescription}">
+                            Child presents with multiple bruises on arms and back in various stages of healing.
+                            Medical examination confirmed signs of malnutrition with weight below the 10th percentile
+                            for age group. Child appears withdrawn, speaks minimally, and demonstrates fear responses
+                            when discussing home situation. School reports declining academic performance and increased
+                            social isolation over the past two months.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card case-info-card">
+                <div class="card-header">
+                    <h3 class="card-title h5 mb-0">Abuser Information</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tbody>
+                        <tr>
+                            <th scope="row">Reporter Full Name:</th>
+                            <td th:text="${caseReport.reporterFullName != null ? caseReport.reporterFullName : 'Anonymous'}">John Doe</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Abuser Gender:</th>
+                            <td th:text="${caseReport.abuserGender != null ? caseReport.abuserGender : 'N/A'}">Male</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Abuser Approximate Age:</th>
+                            <td th:text="${caseReport.abuserApproximateAge > 0 ? caseReport.abuserApproximateAge : 'N/A'}">35</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Relationship to Child:</th>
+                            <td th:text="${caseReport.relationship != null ? caseReport.relationship : 'N/A'}">Uncle</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,130 @@
+<footer class="footer" th:fragment="public-footer">
+  <div class="footer-container">
+    <div class="footer-section">
+      <div class="footer-title">Child Protection Center</div>
+      <p>Dedicated to protecting children from abuse and neglect through awareness, education, and intervention.</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <div class="footer-title">Quick Links</div>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Resources</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <div class="footer-title">Resources</div>
+      <ul>
+        <li><a href="#">Signs of Child Abuse</a></li>
+        <li><a href="#">Prevention Tips</a></li>
+        <li><a href="#">Educational Materials</a></li>
+        <li><a href="#">Statistics</a></li>
+        <li><a href="#">Support Programs</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <div class="footer-title">Contact Us</div>
+      <ul>
+        <li><i class="fas fa-map-marker-alt"></i> 123 Protection Ave, City, State</li>
+        <li><i class="fas fa-phone"></i> 1-800-4ACHILD</li>
+        <li><i class="fas fa-envelope"></i> info@childprotection.org</li>
+      </ul>
+    </div>
+
+    <div class="copyright">
+      &copy; 2025 Child Protection Center. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* Footer */
+  .footer {
+    background-color: #2c3e50;
+    color: var(--white);
+    padding: 30px 0;
+    margin-top: 40px;
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+
+  .footer-section {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .footer-title {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #3498db;
+    font-weight: 600;
+  }
+
+  .footer ul {
+    list-style: none;
+  }
+
+  .footer ul li {
+    margin-bottom: 8px;
+  }
+
+  .footer a {
+    color: #ccc;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer a:hover {
+    color: var(--white);
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+  }
+
+  .social-icons a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s;
+  }
+
+  .social-icons a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+  }
+
+  .copyright {
+    width: 100%;
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+    color: #aaa;
+  }
+</style>

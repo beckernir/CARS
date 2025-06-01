@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Submitted - Confirmation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link th:href="@{/assets/css/public-navbar.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/public-footer.css}" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary-color: #026dae;
+            --secondary-color: #f0f8ff;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --text-color: #333;
+            --light-gray: #f7f7f7;
+            --white: #ffffff;
+            --border-color: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container for centering the confirmation box */
+        #confirmation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 50px 0;
+        }
+
+        .confirmation-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+        }
+
+        .success-icon {
+            font-size: 40px;
+            color: white;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .case-id {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #0074d9;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .primary-btn {
+            background-color: #0074d9;
+            color: white;
+            border: none;
+        }
+
+        .primary-btn:hover {
+            background-color: #0063b8;
+        }
+
+        .secondary-btn {
+            background-color: #f7f7f7;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .secondary-btn:hover {
+            background-color: #ebebeb;
+        }
+
+        .info-box {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            text-align: left;
+            margin-top: 30px;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            color: #ff9800;
+        }
+
+        .info-box p {
+            margin-bottom: 10px;
+        }
+
+        .help-line {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0074d9;
+            margin-top: 5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: black;
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            margin-top: 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .modal-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            border: none;
+        }
+
+        .lookup-btn {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+        }
+
+        .lookup-btn:hover {
+            background-color: #0063b8;
+        }
+
+        .loader {
+            display: none;
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid var(--primary-color);
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .confirmation-container {
+                width: 90%;
+                padding: 30px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/public-navbar :: public-navbar"></div>
+
+<div id="confirmation">
+    <div class="confirmation-container">
+        <div class="icon-container">
+            <i class="fas fa-check success-icon"></i>
+        </div>
+
+        <h1>Report Successfully Submitted</h1>
+
+        <p>Thank you for taking action to protect a child. Your report has been received and will be processed by our team immediately.</p>
+
+        <div th:if="${caseId}">
+            <div class="case-id" th:text="${caseId}">CA-20240515-AB12</div>
+        </div>
+
+        <p>Please save this case ID for your reference. If you need to provide additional information about this case, you'll need to reference this ID.</p>
+
+        <div class="info-box">
+            <h3>What Happens Next?</h3>
+            <p>A qualified case worker will review your report within 24 hours. If the situation is determined to be an emergency, action will be taken immediately.</p>
+            <p>If you provided contact information, you may be contacted for additional details.</p>
+            <p>For emergencies or if a child is in immediate danger, please call our 24/7 hotline:</p>
+            <div class="help-line">1-800-4-A-CHILD (1-800-422-4453)</div>
+        </div>
+
+        <div class="buttons">
+            <a href="/api/v1/cases/new" class="btn secondary-btn">Submit Another Report</a>
+            <a href="/" class="btn primary-btn">Return to Home</a>
+            <button id="lookupCaseBtn" class="btn secondary-btn">Look Up Case Status</button>
+        </div>
+    </div>
+</div>
+
+<!-- Case Lookup Modal -->
+<div id="caseLookupModal" class="modal" th:fragment="caseLookupModal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="modal-header">
+            <h2>Case Status Lookup</h2>
+        </div>
+        <form id="caseLookupForm" th:action="@{/api/v1/cases/track}" method="post">
+            <div class="form-group">
+                <label for="caseIdInput">Enter your Case ID:</label>
+                <input type="text" id="caseIdInput" name="caseId" class="form-control" placeholder="e.g. CA-20240515-AB12" required th:value="${param.caseId}">
+                <p th:if="${error}" class="error-message" th:text="${error}" style="display: block;"></p>
+                <p id="caseIdError" class="error-message" style="display: none;">Please enter a valid Case ID</p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="modal-btn lookup-btn">
+                    Look Up Case
+                    <span id="lookupLoader" class="loader" style="display: none;"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="fragments/public-footer :: public-footer"></div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("caseLookupModal");
+        const openModalLink = document.getElementById("trackProgressLink");
+        const closeBtn = modal.querySelector(".close-modal");
+
+        function openModal() {
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        openModalLink?.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent page jump
+            openModal();
+        });
+
+        closeBtn?.addEventListener("click", closeModal);
+
+        window.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    });
+</script>
+
+<script>
+    // Modal functionality - Pure Thymeleaf approach (NO AJAX)
+    const modal = document.getElementById("caseLookupModal");
+    const btn = document.getElementById("lookupCaseBtn");
+    const closeBtn = document.querySelector(".close-modal");
+    const form = document.getElementById("caseLookupForm");
+    const caseIdInput = document.getElementById("caseIdInput");
+    const caseIdError = document.getElementById("caseIdError");
+    const loader = document.getElementById("lookupLoader");
+
+    // Check if there's an error and show modal automatically
+    document.addEventListener("DOMContentLoaded", function() {
+        // Show modal if there's a Thymeleaf error (user was redirected back with error)
+        const thymeleafError = document.querySelector('p[th\\:if="${error}"]');
+        if (thymeleafError && thymeleafError.textContent.trim() !== '') {
+            modal.style.display = "flex";
+        }
+
+        // Pre-populate case ID if one was just created
+        const currentCaseId = document.querySelector(".case-id");
+        if (currentCaseId && !caseIdInput.value) {
+            caseIdInput.value = currentCaseId.textContent.trim();
+        }
+    });
+
+    // Open modal
+    btn.onclick = function() {
+        modal.style.display = "flex";
+        // Clear any previous client-side errors when opening modal manually
+        caseIdError.style.display = 'none';
+    }
+
+    // Close modal when clicking X
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+        resetForm();
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+            resetForm();
+        }
+    }
+
+    // Reset form and errors
+    function resetForm() {
+        caseIdError.style.display = "none";
+        // Don't hide Thymeleaf errors as they need to persist
+    }
+
+    // Form submission with client-side validation only
+    form.addEventListener("submit", function(e) {
+        const caseId = caseIdInput.value.trim();
+
+        if (!caseId) {
+            e.preventDefault();
+            caseIdError.innerText = "Please enter a Case ID";
+            caseIdError.style.display = "block";
+            return false;
+        }
+
+        // Hide client-side error if input is provided
+        caseIdError.style.display = "none";
+
+        // Show loader for visual feedback
+        loader.style.display = "inline-block";
+
+        // Let the form submit normally to the server (Thymeleaf handles the rest)
+        return true;
+    });
+</script>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #aaa;
+    }
+
+    .close-modal:hover {
+        color: #000;
+    }
+
+    .modal-header h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .modal-footer {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    .modal-btn {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .modal-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .loader {
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #3498db;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Additional styling for the confirmation page */
+    .confirmation-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 40px;
+        text-align: center;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .icon-container {
+        margin-bottom: 20px;
+    }
+
+    .success-icon {
+        font-size: 64px;
+        color: #28a745;
+    }
+
+    .case-id {
+        font-family: monospace;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 20px 0;
+    }
+
+    .info-box {
+        background-color: #e9ecef;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        text-align: left;
+    }
+
+    .info-box h3 {
+        margin-top: 0;
+        color: #495057;
+    }
+
+    .help-line {
+        font-size: 18px;
+        font-weight: bold;
+        color: #dc3545;
+        margin-top: 10px;
+    }
+
+    .buttons {
+        margin-top: 30px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        margin: 0 10px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        font-size: 16px;
+    }
+
+    .primary-btn {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .primary-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .secondary-btn {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .secondary-btn:hover {
+        background-color: #545b62;
+    }
+</style>
+</body></html>

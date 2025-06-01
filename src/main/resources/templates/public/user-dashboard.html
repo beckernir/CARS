@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>CARS - Child Abuse Reporting System</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/plugins.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/kaiadmin.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/sidebar-override.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/navbar-override.css}" rel="stylesheet" />
+    <script src="../../static/assets/js/sidebar.js"></script>
+
+    <!-- Fonts and icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"],
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Public Sans", sans-serif;
+            background: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding: 0;
+            margin: 0;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .cases-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+        .case-item {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .case-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .case-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-open { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-closed { background: #f8d7da; color: #721c24; }
+
+        .report-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .chart-container {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            padding: 10px 15px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 6px 10px;
+        }
+
+        /* Remove any default Bootstrap container padding */
+        .container-fluid {
+            padding: 0;
+        }
+
+        /* Ensure full width usage */
+        .row {
+            margin: 0;
+        }
+
+        .col-md-3, .col-md-6, .col-md-4 {
+            padding-left: 10px;
+            padding-right: 10px;
+
+        }
+
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="~{fragments/public-sidebar :: public-sidebar}"></div>
+    <div class="main-panel">
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Dashboard Overview Section -->
+            <div id="dashboardSection" class="content-section">
+                <div class="dashboard-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1">Dashboard Overview</h2>
+                            <p class="text-muted mb-0">Welcome back! Here's what's happening with your cases.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <h3 class="mb-1" id="totalCases">0</h3>
+                            <p class="text-muted mb-0">Total Cases</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 class="mb-1" id="openCases">0</h3>
+                            <p class="text-muted mb-0">Open Cases</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h3 class="mb-1" id="pendingCases">0</h3>
+                            <p class="text-muted mb-0">Pending Cases</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <h3 class="mb-1" id="closedCases">0</h3>
+                            <p class="text-muted mb-0">Closed Cases</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cases-container">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>Recent Cases</h4>
+                        <button class="btn btn-outline-primary btn-sm" onclick="showSection('cases')">
+                            View All Cases
+                        </button>
+                    </div>
+                    <div id="recentCases">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Loading cases...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cases Section -->
+            <div id="casesSection" class="content-section hidden">
+                <div class="dashboard-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1">My Cases</h2>
+                            <p class="text-muted mb-0">Manage all your cases in one place</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-success me-2" onclick="createNewCase()">
+                                <i class="fas fa-plus me-2"></i>New Case
+                            </button>
+                            <div class="btn-group">
+                                <select class="form-select" id="statusFilter" onchange="filterCases()">
+                                    <option value="">All Status</option>
+                                    <option value="open">Open</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cases-container">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="searchCases" placeholder="Search cases..." onkeyup="searchCases()">
+                    </div>
+                    <div id="allCases">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Loading all cases...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div id="reportsSection" class="content-section hidden">
+                <div class="dashboard-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1">Reports & Analytics</h2>
+                            <p class="text-muted mb-0">Analyze your case data and generate reports</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" onclick="generateReport()">
+                                <i class="fas fa-download me-2"></i>Export Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="report-section">
+                            <h5>Cases by Status</h5>
+                            <div class="chart-container" id="statusChart">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Status Distribution Chart</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="report-section">
+                            <h5>Monthly Trends</h5>
+                            <div class="chart-container" id="trendsChart">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Monthly Trends Chart</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-section mt-4">
+                    <h5>Detailed Analytics</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>This Month</th>
+                                <th>Last Month</th>
+                                <th>Change</th>
+                            </tr>
+                            </thead>
+                            <tbody id="analyticsTable">
+                            <tr>
+                                <td>Cases Created</td>
+                                <td><span id="thisMonthCreated">0</span></td>
+                                <td><span id="lastMonthCreated">0</span></td>
+                                <td><span class="badge bg-success">+0%</span></td>
+                            </tr>
+                            <tr>
+                                <td>Cases Resolved</td>
+                                <td><span id="thisMonthResolved">0</span></td>
+                                <td><span id="lastMonthResolved">0</span></td>
+                                <td><span class="badge bg-success">+0%</span></td>
+                            </tr>
+                            <tr>
+                                <td>Average Resolution Time</td>
+                                <td><span id="avgResolutionTime">0 days</span></td>
+                                <td><span id="lastAvgResolutionTime">0 days</span></td>
+                                <td><span class="badge bg-warning">0%</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!--             Settings Section -->
+            <div id="settingsSection" class="content-section hidden">
+                <div class="dashboard-header">
+                    <h2 class="mb-1">Settings</h2>
+                    <p class="text-muted mb-0">Manage your account and preferences</p>
+                </div>
+
+                <div class="report-section">
+                    <h5>User Profile</h5>
+                    <form id="profileForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="fullName" value="John Doe">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" value="john.doe@example.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Department</label>
+                            <select class="form-select" id="department">
+                                <option value="support">Support</option>
+                                <option value="sales">Sales</option>
+                                <option value="engineering">Engineering</option>
+                                <option value="management">Management</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Mock data - In real application, this would come from Spring Boot API
+    let currentUser = {
+        id: 1,
+        name: "John Doe",
+        email: "john.doe@example.com",
+        department: "support"
+    };
+
+    let userCases = [
+        {
+            id: 1,
+            title: "Login Issue - User Authentication",
+            description: "User unable to authenticate with new password",
+            status: "open",
+            priority: "high",
+            createdBy: 1,
+            createdDate: "2024-03-15",
+            assignedTo: "Support Team"
+        },
+        {
+            id: 2,
+            title: "Payment Gateway Error",
+            description: "Payment processing fails with error code 502",
+            status: "pending",
+            priority: "medium",
+            createdBy: 1,
+            createdDate: "2024-03-14",
+            assignedTo: "Engineering Team"
+        },
+        {
+            id: 3,
+            title: "Database Connection Timeout",
+            description: "Application experiencing intermittent database timeouts",
+            status: "closed",
+            priority: "high",
+            createdBy: 1,
+            createdDate: "2024-03-10",
+            assignedTo: "Engineering Team"
+        },
+        {
+            id: 4,
+            title: "Email Notification Bug",
+            description: "Users not receiving email notifications",
+            status: "open",
+            priority: "low",
+            createdBy: 1,
+            createdDate: "2024-03-12",
+            assignedTo: "Support Team"
+        }
+    ];
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUserData();
+        loadDashboardStats();
+        loadRecentCases();
+        updateNavigation();
+    });
+
+    function loadUserData() {
+        document.getElementById('userName').textContent = currentUser.name;
+        document.getElementById('fullName').value = currentUser.name;
+        document.getElementById('email').value = currentUser.email;
+        document.getElementById('department').value = currentUser.department;
+    }
+
+    function loadDashboardStats() {
+        // Filter cases created by current user
+        const myCases = userCases.filter(case_ => case_.createdBy === currentUser.id);
+
+        const stats = {
+            total: myCases.length,
+            open: myCases.filter(case_ => case_.status === 'open').length,
+            pending: myCases.filter(case_ => case_.status === 'pending').length,
+            closed: myCases.filter(case_ => case_.status === 'closed').length
+        };
+
+        document.getElementById('totalCases').textContent = stats.total;
+        document.getElementById('openCases').textContent = stats.open;
+        document.getElementById('pendingCases').textContent = stats.pending;
+        document.getElementById('closedCases').textContent = stats.closed;
+        document.getElementById('caseCount').textContent = stats.total;
+    }
+
+    function loadRecentCases() {
+        const myCases = userCases
+            .filter(case_ => case_.createdBy === currentUser.id)
+            .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))
+            .slice(0, 3);
+
+        const container = document.getElementById('recentCases');
+        container.innerHTML = '';
+
+        if (myCases.length === 0) {
+            container.innerHTML = '<p class="text-muted">No cases found.</p>';
+            return;
+        }
+
+        myCases.forEach(case_ => {
+            const caseElement = createCaseElement(case_);
+            container.appendChild(caseElement);
+        });
+    }
+
+    function loadAllCases() {
+        const myCases = userCases
+            .filter(case_ => case_.createdBy === currentUser.id)
+            .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+
+        const container = document.getElementById('allCases');
+        container.innerHTML = '';
+
+        if (myCases.length === 0) {
+            container.innerHTML = '<p class="text-muted">No cases found.</p>';
+            return;
+        }
+
+        myCases.forEach(case_ => {
+            const caseElement = createCaseElement(case_, true);
+            container.appendChild(caseElement);
+        });
+    }
+
+    function createCaseElement(case_, detailed = false) {
+        const div = document.createElement('div');
+        div.className = 'case-item';
+        div.onclick = () => openCaseDetails(case_.id);
+
+        const statusClass = `status-${case_.status}`;
+        const priorityIcon = case_.priority === 'high' ? 'fas fa-exclamation-triangle text-danger' :
+            case_.priority === 'medium' ? 'fas fa-minus-circle text-warning' :
+                'fas fa-info-circle text-info';
+
+        div.innerHTML = `
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="${priorityIcon} me-2"></i>
+                            <h6 class="mb-0">${case_.title}</h6>
+                            <span class="case-status ${statusClass} ms-2">${case_.status.toUpperCase()}</span>
+                        </div>
+                        <p class="text-muted mb-2">${case_.description}</p>
+                        ${detailed ? `
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <small class="text-muted">Created: ${new Date(case_.createdDate).toLocaleDateString()}</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Assigned: ${case_.assignedTo}</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Priority: ${case_.priority.toUpperCase()}</small>
+                                </div>
+                            </div>
+                        ` : `
+                            <small class="text-muted">Created: ${new Date(case_.createdDate).toLocaleDateString()}</small>
+                        `}
+                    </div>
+                    <div class="ms-3">
+                        <button class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); editCase(${case_.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+        return div;
+    }
+
+    function showSection(sectionName) {
+        // Hide all sections
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.classList.add('hidden');
+        });
+
+        // Show selected section
+        document.getElementById(sectionName + 'Section').classList.remove('hidden');
+
+        // Update navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        // Load section-specific data
+        if (sectionName === 'cases') {
+            loadAllCases();
+        } else if (sectionName === 'reports') {
+            loadReports();
+        }
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('collapsed')) {
+            toggleIcon.className = 'fas fa-chevron-right';
+        } else {
+            toggleIcon.className = 'fas fa-chevron-left';
+        }
+    }
+
+    function updateNavigation() {
+        // Update case count in navigation
+        const myCases = userCases.filter(case_ => case_.createdBy === currentUser.id);
+        document.getElementById('caseCount').textContent = myCases.length;
+    }
+
+    function refreshData() {
+        // Simulate API call
+        setTimeout(() => {
+            loadDashboardStats();
+            loadRecentCases();
+            updateNavigation();
+
+            // Show success message
+            showAlert('Data refreshed successfully!', 'success');
+        }, 1000);
+    }
+
+    function filterCases() {
+        const filter = document.getElementById('statusFilter').value;
+        const myCases = userCases
+            .filter(case_ => case_.createdBy === currentUser.id)
+            .filter(case_ => !filter || case_.status === filter)
+            .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+
+        const container = document.getElementById('allCases');
+        container.innerHTML = '';
+
+        if (myCases.length === 0) {
+            container.innerHTML = '<p class="text-muted">No cases found matching the filter.</p>';
+            return;
+        }
+
+        myCases.forEach(case_ => {
+            const caseElement = createCaseElement(case_, true);
+            container.appendChild(caseElement);
+        });
+    }
+
+    function searchCases() {
+        const searchTerm = document.getElementById('searchCases').value.toLowerCase();
+        const myCases = userCases
+            .filter(case_ => case_.createdBy === currentUser.id)
+            .filter(case_ =>
+                case_.title.toLowerCase().includes(searchTerm) ||
+                case_.description.toLowerCase().includes(searchTerm)
+            )
+            .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+
+        const container = document.getElementById('allCases');
+        container.innerHTML = '';
+
+        if (myCases.length === 0) {
+            container.innerHTML = '<p class="text-muted">No cases found matching the search term.</p>';
+            return;
+        }
+
+        myCases.forEach(case_ => {
+            const caseElement = createCaseElement(case_, true);
+            container.appendChild(caseElement);
+        });
+    }
+
+    function createNewCase() {
+        // In a real application, this would open a modal or navigate to a new page
+        showAlert('New case creation form would open here', 'info');
+    }
+
+    function editCase(caseId) {
+        // In a real application, this would open an edit modal or navigate to edit page
+        showAlert(`Edit case ${caseId} form would open here`, 'info');
+    }
+
+    function openCaseDetails(caseId) {
+        // In a real application, this would open case details modal or navigate to details page
+        showAlert(`Case ${caseId} details would open here`, 'info');
+    }
+
+    function loadReports() {
+        // Update analytics table with mock data
+        document.getElementById('thisMonthCreated').textContent = '12';
+        document.getElementById('lastMonthCreated').textContent = '8';
+        document.getElementById('thisMonthResolved').textContent = '10';
+        document.getElementById('lastMonthResolved').textContent = '7';
+        document.getElementById('avgResolutionTime').textContent = '3.2 days';
+        document.getElementById('lastAvgResolutionTime').textContent = '4.1 days';
+    }
+
+    function generateReport() {
+        // Simulate report generation
+        showAlert('Report generation started. You will receive an email when ready.', 'success');
+    }
+
+    function showAlert(message, type) {
+        // Create and show Bootstrap alert
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        alertDiv.style.top = '20px';
+        alertDiv.style.right = '20px';
+        alertDiv.style.zIndex = '9999';
+        alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+        document.body.appendChild(alertDiv);
+
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 3000);
+    }
+
+    // Handle profile form submission
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Update current user data
+        currentUser.name = document.getElementById('fullName').value;
+        currentUser.email = document.getElementById('email').value;
+        currentUser.department = document.getElementById('department').value;
+
+        // Update UI
+        document.getElementById('userName').textContent = currentUser.name;
+
+        showAlert('Profile updated successfully!', 'success');
+    });
+
+    // Simulate real-time updates
+    setInterval(() => {
+        // In a real application, this would poll the server for updates
+        // For demo purposes, we'll just update the last activity time
+    }, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,1485 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Child Protection Services - Regional Dashboard</title>-->
+<!--    &lt;!&ndash; Fonts and icons &ndash;&gt;-->
+<!--    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>-->
+<!--    <script>-->
+<!--        WebFont.load({-->
+<!--            google: { families: ["Public Sans:300,400,500,600,700"] },-->
+<!--            custom: {-->
+<!--                families: [-->
+<!--                    "Font Awesome 5 Solid",-->
+<!--                    "Font Awesome 5 Regular",-->
+<!--                    "Font Awesome 5 Brands",-->
+<!--                    "simple-line-icons",-->
+<!--                ],-->
+<!--                urls: ["../static/assets/css/fonts.min.css"],-->
+<!--            },-->
+<!--            active: function () {-->
+<!--                sessionStorage.fonts = true;-->
+<!--            },-->
+<!--        });-->
+<!--    </script>-->
+<!--    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet" />-->
+<!--    <link th:href="@{/assets/css/plugins.min.css}" rel="stylesheet" />-->
+<!--    <link th:href="@{/assets/css/kaiadmin.min.css}" rel="stylesheet" />-->
+<!--    <link th:href="@{/assets/css/sidebar-override.css}" rel="stylesheet" />-->
+<!--    <link th:href="@{/assets/css/navbar-override.css}" rel="stylesheet" />-->
+<!--    <script src="../../static/assets/js/sidebar.js"></script>-->
+
+<!--    &lt;!&ndash; Bootstrap Bundle with Popper &ndash;&gt;-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+
+<!--    <style>-->
+<!--        :root {-->
+<!--            &#45;&#45;primary: #2563eb;-->
+<!--            &#45;&#45;primary-dark: #1d4ed8;-->
+<!--            &#45;&#45;secondary: #475569;-->
+<!--            &#45;&#45;success: #16a34a;-->
+<!--            &#45;&#45;danger: #dc2626;-->
+<!--            &#45;&#45;warning: #eab308;-->
+<!--            &#45;&#45;light-bg: #f8fafc;-->
+<!--            &#45;&#45;card-bg: #ffffff;-->
+<!--            &#45;&#45;text: #1e293b;-->
+<!--            &#45;&#45;text-light: #64748b;-->
+<!--            &#45;&#45;border: #e2e8f0;-->
+<!--        }-->
+
+<!--        * {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            background-color: var(&#45;&#45;light-bg);-->
+<!--            color: var(&#45;&#45;text);-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 1280px;-->
+<!--            margin: 0 auto;-->
+<!--            padding: 1rem;-->
+<!--        }-->
+
+<!--        header {-->
+<!--            background-color: var(&#45;&#45;card-bg);-->
+<!--            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);-->
+<!--            padding: 1rem 0;-->
+<!--            position: sticky;-->
+<!--            top: 0;-->
+<!--            z-index: 100;-->
+<!--        }-->
+
+
+<!--        h1 {-->
+<!--            font-size: 1.5rem;-->
+<!--            color: var(&#45;&#45;primary);-->
+<!--        }-->
+<!--        .dashboard {-->
+<!--            padding: 1.5rem 0;-->
+<!--        }-->
+
+<!--        select, input {-->
+<!--            padding: 0.5rem;-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: 0.375rem;-->
+<!--            background-color: var(&#45;&#45;card-bg);-->
+<!--        }-->
+
+<!--        .dashboard-title {-->
+<!--            font-size: 1.25rem;-->
+<!--            font-weight: 600;-->
+<!--        }-->
+
+<!--        .overview-cards {-->
+<!--            margin-top: 20px;-->
+<!--            display: grid;-->
+<!--            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));-->
+<!--            gap: 1rem;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--        }-->
+
+<!--        .card {-->
+<!--            background-color: var(&#45;&#45;card-bg);-->
+<!--            border-radius: 0.5rem;-->
+<!--            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);-->
+<!--            padding: 1.25rem;-->
+<!--        }-->
+
+<!--        .card-title {-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--            font-size: 0.875rem;-->
+<!--            margin-bottom: 0.5rem;-->
+<!--        }-->
+
+<!--        .card-value {-->
+<!--            font-size: 1.875rem;-->
+<!--            font-weight: 600;-->
+<!--            margin-bottom: 0.5rem;-->
+<!--        }-->
+
+<!--        .card-footer {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            font-size: 0.875rem;-->
+<!--        }-->
+
+<!--        .trend-up {-->
+<!--            color: var(&#45;&#45;success);-->
+<!--        }-->
+
+<!--        .trend-down {-->
+<!--            color: var(&#45;&#45;danger);-->
+<!--        }-->
+
+<!--        .grid-section {-->
+<!--            display: grid;-->
+<!--            grid-template-columns: 2fr 1fr;-->
+<!--            gap: 1rem;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--        }-->
+
+<!--        .chart-container {-->
+<!--            background-color: var(&#45;&#45;card-bg);-->
+<!--            border-radius: 0.5rem;-->
+<!--            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);-->
+<!--            padding: 1.25rem;-->
+<!--            height: 300px;-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        .chart-header {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            margin-bottom: 1rem;-->
+<!--        }-->
+
+<!--        .data-grid {-->
+<!--            display: grid;-->
+<!--            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));-->
+<!--            gap: 1rem;-->
+<!--        }-->
+
+<!--        .data-table {-->
+<!--            width: 100%;-->
+<!--            border-collapse: collapse;-->
+<!--            font-size: 0.875rem;-->
+<!--        }-->
+
+<!--        .data-table th {-->
+<!--            text-align: left;-->
+<!--            padding: 0.75rem;-->
+<!--            border-bottom: 2px solid var(&#45;&#45;border);-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--            font-weight: 500;-->
+<!--        }-->
+
+<!--        .data-table td {-->
+<!--            padding: 0.75rem;-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border);-->
+<!--        }-->
+
+<!--        .badge {-->
+<!--            display: inline-block;-->
+<!--            padding: 0.25rem 0.5rem;-->
+<!--            border-radius: 9999px;-->
+<!--            font-size: 0.75rem;-->
+<!--            font-weight: 500;-->
+<!--        }-->
+
+<!--        .badge-success {-->
+<!--            background-color: rgba(22, 163, 74, 0.1);-->
+<!--            color: var(&#45;&#45;success);-->
+<!--        }-->
+
+<!--        .badge-warning {-->
+<!--            background-color: rgba(234, 179, 8, 0.1);-->
+<!--            color: var(&#45;&#45;warning);-->
+<!--        }-->
+
+<!--        .badge-danger {-->
+<!--            background-color: rgba(220, 38, 38, 0.1);-->
+<!--            color: var(&#45;&#45;danger);-->
+<!--        }-->
+<!--        .menu-visible .sidebar-menu {-->
+<!--            transform: translateX(0);-->
+<!--        }-->
+
+<!--        @media (max-width: 768px) {-->
+<!--            .grid-section {-->
+<!--                grid-template-columns: 1fr;-->
+<!--            }-->
+
+<!--            .menu-toggle {-->
+<!--                display: block;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="wrapper">-->
+<!--    <div th:replace="~{fragments/sidebar :: sidebar}"></div>-->
+<!--    <div class="main-panel">-->
+<!--        <div th:replace="~{fragments/navbar :: navbar}"></div>-->
+<!--        <div class="container dashboard">-->
+<!--            <div class="overview-cards">-->
+<!--                <div class="card">-->
+<!--                    <div class="card-title">Total Case Reports</div>-->
+<!--                    <div class="card-value">1,248</div>-->
+<!--                    <div class="card-footer">-->
+<!--                        <span class="trend-up">↑ 12.3%</span>-->
+<!--                        <span style="margin-left: 0.5rem; color: var(&#45;&#45;text-light);">vs previous period</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="card">-->
+<!--                    <div class="card-title">Avg. Response Time</div>-->
+<!--                    <div class="card-value">8.4 hrs</div>-->
+<!--                    <div class="card-footer">-->
+<!--                        <span class="trend-down">↓ 15.6%</span>-->
+<!--                        <span style="margin-left: 0.5rem; color: var(&#45;&#45;text-light);">vs previous period</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="card">-->
+<!--                    <div class="card-title">Case Resolution Rate</div>-->
+<!--                    <div class="card-value">78.2%</div>-->
+<!--                    <div class="card-footer">-->
+<!--                        <span class="trend-up">↑ 5.7%</span>-->
+<!--                        <span style="margin-left: 0.5rem; color: var(&#45;&#45;text-light);">vs previous period</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="card">-->
+<!--                    <div class="card-title">Authority Assignment Efficiency</div>-->
+<!--                    <div class="card-value">93.1%</div>-->
+<!--                    <div class="card-footer">-->
+<!--                        <span class="trend-up">↑ 2.8%</span>-->
+<!--                        <span style="margin-left: 0.5rem; color: var(&#45;&#45;text-light);">vs previous period</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="grid-section">-->
+<!--                <div class="chart-container">-->
+<!--                    <div class="chart-header">-->
+<!--                        <h3>Reports by Region</h3>-->
+<!--                        <div>-->
+<!--                            <select>-->
+<!--                                <option>All Case Types</option>-->
+<!--                                <option>Physical Abuse</option>-->
+<!--                                <option>Emotional Abuse</option>-->
+<!--                                <option>Neglect</option>-->
+<!--                                <option>Sexual Abuse</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <img src="/api/placeholder/600/220" alt="Region chart placeholder"-->
+<!--                         style="width: 100%; height: 220px; object-fit: cover;">-->
+<!--                </div>-->
+<!--                <div class="chart-container">-->
+<!--                    <div class="chart-header">-->
+<!--                        <h3>Case Types Distribution</h3>-->
+<!--                    </div>-->
+<!--                    <img src="/api/placeholder/280/220" alt="Pie chart placeholder"-->
+<!--                         style="width: 100%; height: 220px; object-fit: cover;">-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div style="margin-top: 1.5rem;">-->
+<!--                <div class="data-grid">-->
+<!--                    <div class="card">-->
+<!--                        <div class="chart-header">-->
+<!--                            <h3>Recent High Priority Cases</h3>-->
+<!--                            <a href="#" style="color: var(&#45;&#45;primary); text-decoration: none; font-size: 0.875rem;">View-->
+<!--                                All</a>-->
+<!--                        </div>-->
+<!--                        <table class="data-table">-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th>Case ID</th>-->
+<!--                                <th>Type</th>-->
+<!--                                <th>Region</th>-->
+<!--                                <th>Status</th>-->
+<!--                                <th>Assigned</th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            <tr>-->
+<!--                                <td>CPS-2025-4872</td>-->
+<!--                                <td>Physical Abuse</td>-->
+<!--                                <td>Northern District</td>-->
+<!--                                <td><span class="badge badge-warning">In Progress</span></td>-->
+<!--                                <td>T. Williams</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>CPS-2025-4851</td>-->
+<!--                                <td>Neglect</td>-->
+<!--                                <td>Eastern District</td>-->
+<!--                                <td><span class="badge badge-success">Resolved</span></td>-->
+<!--                                <td>M. Garcia</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>CPS-2025-4820</td>-->
+<!--                                <td>Sexual Abuse</td>-->
+<!--                                <td>Central District</td>-->
+<!--                                <td><span class="badge badge-danger">Escalated</span></td>-->
+<!--                                <td>A. Johnson</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>CPS-2025-4803</td>-->
+<!--                                <td>Emotional Abuse</td>-->
+<!--                                <td>Western District</td>-->
+<!--                                <td><span class="badge badge-warning">In Progress</span></td>-->
+<!--                                <td>S. Thompson</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+
+<!--                    <div class="card">-->
+<!--                        <div class="chart-header">-->
+<!--                            <h3>Demographic Analysis</h3>-->
+<!--                        </div>-->
+<!--                        <table class="data-table">-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th>Age Group</th>-->
+<!--                                <th>Cases</th>-->
+<!--                                <th>% of Total</th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            <tr>-->
+<!--                                <td>0-4 years</td>-->
+<!--                                <td>385</td>-->
+<!--                                <td>30.8%</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>5-9 years</td>-->
+<!--                                <td>304</td>-->
+<!--                                <td>24.4%</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>10-14 years</td>-->
+<!--                                <td>376</td>-->
+<!--                                <td>30.1%</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>15-17 years</td>-->
+<!--                                <td>183</td>-->
+<!--                                <td>14.7%</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    // Demo script for dashboard interactivity-->
+<!--    document.addEventListener('DOMContentLoaded', function () {-->
+<!--        const menuToggle = document.querySelector('.menu-toggle');-->
+<!--        const body = document.body;-->
+
+<!--        menuToggle.addEventListener('click', function () {-->
+<!--            body.classList.toggle('menu-visible');-->
+<!--        });-->
+
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Protection Services - Regional Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #475569;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #eab308;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .dashboard {
+            padding: 1.5rem 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        select, input, button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            background-color: var(--card-bg);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        select:hover, input:hover {
+            border-color: var(--primary);
+        }
+
+        .dashboard-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value {
+            font-size: 1.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .card:hover .card-value {
+            color: var(--primary);
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+        .grid-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem;
+            position: relative;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-header h3 {
+            margin: 0;
+            color: var(--text);
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 2px solid var(--border);
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: var(--light-bg);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .badge:hover {
+            transform: scale(1.05);
+        }
+
+        .badge-success {
+            background-color: rgba(22, 163, 74, 0.1);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background-color: rgba(234, 179, 8, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background-color: rgba(220, 38, 38, 0.1);
+            color: var(--danger);
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 500;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: var(--success);
+        }
+
+        .notification.error {
+            background-color: var(--danger);
+        }
+
+        .error-message {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .grid-section {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>Child Protection Services - Regional Dashboard</h1>
+    </div>
+</header>
+
+<div class="container dashboard">
+    <div class="controls">
+        <select id="regionFilter">
+            <option value="all">All Regions</option>
+            <option value="northern">Northern District</option>
+            <option value="eastern">Eastern District</option>
+            <option value="central">Central District</option>
+            <option value="western">Western District</option>
+        </select>
+
+        <select id="caseTypeFilter">
+            <option value="all">All Case Types</option>
+            <option value="PHYSICAL_ABUSE">Physical Abuse</option>
+            <option value="EMOTIONAL_ABUSE">Emotional Abuse</option>
+            <option value="SEXUAL_ABUSE">Sexual Abuse</option>
+            <option value="NEGLECT">Neglect</option>
+        </select>
+
+        <input type="date" id="dateFrom" value="2025-01-01">
+        <input type="date" id="dateTo" value="2025-05-28">
+
+        <button onclick="refreshData()">Refresh Data</button>
+        <button onclick="exportData()">Export Report</button>
+    </div>
+
+    <div class="overview-cards">
+        <div class="card" onclick="showCaseDetails('total')">
+            <div class="card-title">Total Case Reports</div>
+            <div class="card-value" id="totalCases">Loading...</div>
+            <div class="card-footer">
+                <span id="totalCasesTrend">--</span>
+                <span style="margin-left: 0.5rem; color: var(--text-light);">vs previous period</span>
+            </div>
+        </div>
+        <div class="card" onclick="showCaseDetails('active')">
+            <div class="card-title">Active Cases</div>
+            <div class="card-value" id="activeCases">Loading...</div>
+            <div class="card-footer">
+                <span id="activeCasesTrend">--</span>
+                <span style="margin-left: 0.5rem; color: var(--text-light);">currently active</span>
+            </div>
+        </div>
+        <div class="card" onclick="showCaseDetails('closed')">
+            <div class="card-title">Closed Cases</div>
+            <div class="card-value" id="closedCases">Loading...</div>
+            <div class="card-footer">
+                <span id="closedCasesTrend">--</span>
+                <span style="margin-left: 0.5rem; color: var(--text-light);">resolved cases</span>
+            </div>
+        </div>
+        <div class="card" onclick="showCaseDetails('reported')">
+            <div class="card-title">Reported Cases</div>
+            <div class="card-value" id="reportedCases">Loading...</div>
+            <div class="card-footer">
+                <span id="reportedCasesTrend">--</span>
+                <span style="margin-left: 0.5rem; color: var(--text-light);">pending investigation</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-section">
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Reports by Region</h3>
+                <select id="regionChartFilter" onchange="updateRegionChart()">
+                    <option value="all">All Case Types</option>
+                    <option value="PHYSICAL_ABUSE">Physical Abuse</option>
+                    <option value="EMOTIONAL_ABUSE">Emotional Abuse</option>
+                    <option value="NEGLECT">Neglect</option>
+                    <option value="SEXUAL_ABUSE">Sexual Abuse</option>
+                </select>
+            </div>
+            <canvas id="regionChart" style="height: 250px;"></canvas>
+        </div>
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Case Types Distribution</h3>
+            </div>
+            <canvas id="pieChart" style="height: 250px;"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-container" style="margin-bottom: 1.5rem;">
+        <div class="chart-header">
+            <h3>Monthly Trends</h3>
+            <select id="trendPeriod" onchange="updateTrendChart()">
+                <option value="6">Last 6 Months</option>
+                <option value="12" selected>Last 12 Months</option>
+                <option value="24">Last 24 Months</option>
+            </select>
+        </div>
+        <canvas id="trendChart" style="height: 300px;"></canvas>
+    </div>
+
+    <div class="data-grid">
+        <div class="card">
+            <div class="chart-header">
+                <h3>Recent Active Cases</h3>
+                <a href="#" onclick="viewAllCases()" style="color: var(--primary); text-decoration: none; font-size: 0.875rem;">View All</a>
+            </div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Case ID</th>
+                    <th>Type</th>
+                    <th>District</th>
+                    <th>Status</th>
+                    <th>Assigned</th>
+                </tr>
+                </thead>
+                <tbody id="casesTableBody">
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 2rem;">Loading cases...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="chart-header">
+                <h3>Age Group Analysis</h3>
+                <button onclick="updateDemographics()" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Update</button>
+            </div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Age Group</th>
+                    <th>Cases</th>
+                    <th>% of Total</th>
+                </tr>
+                </thead>
+                <tbody id="demographicsTableBody">
+                <tr>
+                    <td colspan="3" style="text-align: center; padding: 2rem;">Loading demographics...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="notification" class="notification"></div>
+
+<script>
+    // Global variables for charts
+    let regionChart, pieChart, trendChart;
+    let currentData = {};
+
+    // API Configuration - Update this to match your backend URL
+    const API_BASE = 'http://localhost:9002/api/analytics';
+
+    // API Client
+    class APIClient {
+        static async request(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('API request failed:', error);
+                showNotification(`API Error: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+
+        static async getDashboardAnalytics() {
+            return this.request('/dashboard');
+        }
+
+        static async getCaseStatistics() {
+            return this.request('/statistics');
+        }
+
+        static async getRegionAnalysis() {
+            return this.request('/regions');
+        }
+
+        static async getAbuseTypeAnalysis() {
+            return this.request('/abuse-types');
+        }
+
+        static async getMonthlyTrends() {
+            return this.request('/trends/monthly');
+        }
+
+        static async getAgeGroupAnalysis() {
+            return this.request('/age-groups');
+        }
+
+        static async getActiveCases() {
+            return this.request('/cases/active');
+        }
+
+        static async getClosedCases() {
+            return this.request('/cases/closed');
+        }
+
+        static async getStatusSummary() {
+            return this.request('/status-summary');
+        }
+
+        static async updateCaseStatus(caseId, status) {
+            return this.request(`/cases/${caseId}/status?status=${status}`, {
+                method: 'PUT'
+            });
+        }
+
+        static async getCasesByStatus(status) {
+            return this.request(`/cases/status/${status}`);
+        }
+    }
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeCharts();
+        setupEventListeners();
+        loadInitialData();
+    });
+
+    function initializeCharts() {
+        // Region Chart
+        const regionCtx = document.getElementById('regionChart').getContext('2d');
+        regionChart = new Chart(regionCtx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Case Reports',
+                    data: [],
+                    backgroundColor: '#2563eb',
+                    borderColor: '#1d4ed8',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Pie Chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        pieChart = new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: ['#dc2626', '#eab308', '#16a34a', '#2563eb'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { padding: 10, font: { size: 11 } }
+                    }
+                }
+            }
+        });
+
+        // Trend Chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        trendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Monthly Cases',
+                    data: [],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    function setupEventListeners() {
+        // Filter change events
+        const regionFilter = document.getElementById('regionFilter');
+        const caseTypeFilter = document.getElementById('caseTypeFilter');
+        const dateFrom = document.getElementById('dateFrom');
+        const dateTo = document.getElementById('dateTo');
+
+        if (regionFilter) regionFilter.addEventListener('change', applyFilters);
+        if (caseTypeFilter) caseTypeFilter.addEventListener('change', applyFilters);
+        if (dateFrom) dateFrom.addEventListener('change', applyFilters);
+        if (dateTo) dateTo.addEventListener('change', applyFilters);
+
+        // Refresh button
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) refreshBtn.addEventListener('click', refreshData);
+
+        // Export button
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) exportBtn.addEventListener('click', exportData);
+    }
+
+    async function loadInitialData() {
+        try {
+            showNotification('Loading dashboard data...', 'success');
+            document.body.classList.add('loading');
+
+            // Load all dashboard data
+            const [
+                statistics,
+                regionData,
+                abuseTypeData,
+                trendsData,
+                ageGroupData,
+                activeCases,
+                statusSummary
+            ] = await Promise.all([
+                APIClient.getCaseStatistics(),
+                APIClient.getRegionAnalysis(),
+                APIClient.getAbuseTypeAnalysis(),
+                APIClient.getMonthlyTrends(),
+                APIClient.getAgeGroupAnalysis(),
+                APIClient.getActiveCases(),
+                APIClient.getStatusSummary()
+            ]);
+
+            // Update summary cards
+            updateSummaryCards(statistics, statusSummary);
+
+            // Update charts
+            updateRegionChartData(regionData);
+            updatePieChartData(abuseTypeData);
+            updateTrendChartData(trendsData);
+
+            // Update tables
+            updateCasesTable(activeCases);
+            updateDemographicsTable(ageGroupData);
+
+            currentData = {
+                statistics,
+                regions: regionData,
+                abuseTypes: abuseTypeData,
+                trends: trendsData,
+                ageGroups: ageGroupData,
+                activeCases,
+                statusSummary
+            };
+
+            document.body.classList.remove('loading');
+            showNotification('Dashboard loaded successfully', 'success');
+        } catch (error) {
+            document.body.classList.remove('loading');
+            showNotification('Failed to load dashboard data', 'error');
+            console.error('Dashboard load error:', error);
+            showErrorMessage('Failed to connect to the API. Please check if the backend server is running.');
+        }
+    }
+
+    function updateSummaryCards(statistics, statusSummary) {
+        // Update total cases
+        const totalCasesEl = document.getElementById('totalCases');
+        if (totalCasesEl) totalCasesEl.textContent = statistics.totalCases || '0';
+
+        // Update active cases
+        const activeCasesEl = document.getElementById('activeCases');
+        if (activeCasesEl) activeCasesEl.textContent = statistics.activeCases || '0';
+
+        // Update closed cases
+        const closedCasesEl = document.getElementById('closedCases');
+        if (closedCasesEl) closedCasesEl.textContent = statistics.closedCases || '0';
+
+        // Update reported cases
+        const reportedCasesEl = document.getElementById('reportedCases');
+        if (reportedCasesEl) reportedCasesEl.textContent = statusSummary.reportedCases || '0';
+
+        // Update trends
+        updateTrendIndicator('totalCasesTrend', '+12.3%', true);
+        updateTrendIndicator('activeCasesTrend', statistics.activeCases || '0', false);
+        updateTrendIndicator('closedCasesTrend', statistics.closedCases || '0', false);
+        updateTrendIndicator('reportedCasesTrend', statusSummary.reportedCases || '0', false);
+    }
+
+    function updateTrendIndicator(elementId, value, isPercentage) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        if (isPercentage && value.startsWith('+')) {
+            element.innerHTML = `<span class="trend-up">↑ ${value.substring(1)}</span>`;
+        } else if (isPercentage && value.startsWith('-')) {
+            element.innerHTML = `<span class="trend-down">↓ ${value.substring(1)}</span>`;
+        } else {
+            element.textContent = value;
+        }
+    }
+
+    function updateRegionChartData(regionData) {
+        if (!regionData || regionData.length === 0) {
+            showNotification('No region data available', 'warning');
+            return;
+        }
+
+        const labels = regionData.map(item => item.region || item.regionName || 'Unknown');
+        const data = regionData.map(item => item.caseCount || item.cases || 0);
+
+        regionChart.data.labels = labels;
+        regionChart.data.datasets[0].data = data;
+        regionChart.update();
+    }
+
+    function updatePieChartData(abuseTypeData) {
+        if (!abuseTypeData || abuseTypeData.length === 0) {
+            showNotification('No abuse type data available', 'warning');
+            return;
+        }
+
+        const labels = abuseTypeData.map(item => formatAbuseType(item.abuseType || item.type));
+        const data = abuseTypeData.map(item => item.caseCount || item.cases || 0);
+
+        pieChart.data.labels = labels;
+        pieChart.data.datasets[0].data = data;
+        pieChart.update();
+    }
+
+    function updateTrendChartData(trendsData) {
+        if (!trendsData || trendsData.length === 0) {
+            showNotification('No trend data available', 'warning');
+            return;
+        }
+
+        const labels = trendsData.map(item => item.month || item.period || 'Unknown');
+        const data = trendsData.map(item => item.caseCount || item.cases || 0);
+
+        trendChart.data.labels = labels;
+        trendChart.data.datasets[0].data = data;
+        trendChart.update();
+    }
+
+    function updateCasesTable(activeCases) {
+        const tableBody = document.getElementById('casesTableBody');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = '';
+
+        if (!activeCases || activeCases.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">No active cases found</td></tr>';
+            return;
+        }
+
+        // Show first 10 cases for dashboard view
+        const displayCases = activeCases.slice(0, 10);
+
+        displayCases.forEach(caseItem => {
+            const row = document.createElement('tr');
+            row.onclick = () => selectCase(caseItem.caseId);
+
+            row.innerHTML = `
+            <td>${caseItem.caseId || 'N/A'}</td>
+            <td>${formatAbuseType(caseItem.abuseType)}</td>
+            <td>${caseItem.district || caseItem.region || 'N/A'}</td>
+            <td><span class="badge badge-${getStatusClass(caseItem.status)}"
+                    onclick="updateCaseStatus('${caseItem.caseId}', event)">${formatStatus(caseItem.status)}</span></td>
+            <td>${caseItem.assignedTo || 'Unassigned'}</td>
+        `;
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    function updateDemographicsTable(ageGroupData) {
+        const tableBody = document.getElementById('demographicsTableBody');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = '';
+
+        if (!ageGroupData || ageGroupData.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 2rem;">No demographic data found</td></tr>';
+            return;
+        }
+
+        const totalCases = ageGroupData.reduce((sum, item) => sum + (item.caseCount || item.cases || 0), 0);
+
+        ageGroupData.forEach(group => {
+            const row = document.createElement('tr');
+            const cases = group.caseCount || group.cases || 0;
+            const percentage = totalCases > 0 ? ((cases / totalCases) * 100).toFixed(1) : '0.0';
+
+            row.innerHTML = `
+            <td>${group.ageGroup || 'Unknown'}</td>
+            <td>${cases}</td>
+            <td>${percentage}%</td>
+        `;
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    function formatAbuseType(type) {
+        if (!type) return 'Unknown';
+
+        const typeMap = {
+            'PHYSICAL_ABUSE': 'Physical Abuse',
+            'EMOTIONAL_ABUSE': 'Emotional Abuse',
+            'SEXUAL_ABUSE': 'Sexual Abuse',
+            'NEGLECT': 'Neglect'
+        };
+        return typeMap[type] || type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    function formatStatus(status) {
+        if (!status) return 'Unknown';
+
+        const statusMap = {
+            'REPORTED': 'Reported',
+            'UNDER_INVESTIGATION': 'Under Investigation',
+            'IN_PROGRESS': 'In Progress',
+            'RESOLVED': 'Resolved',
+            'DISMISSED': 'Dismissed'
+        };
+        return statusMap[status] || status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    function getStatusClass(status) {
+        const statusClasses = {
+            'REPORTED': 'warning',
+            'UNDER_INVESTIGATION': 'warning',
+            'IN_PROGRESS': 'warning',
+            'RESOLVED': 'success',
+            'DISMISSED': 'danger'
+        };
+        return statusClasses[status] || 'warning';
+    }
+
+    async function updateRegionChart() {
+        try {
+            const filter = document.getElementById('regionChartFilter')?.value;
+            showNotification('Updating region chart...', 'success');
+            const regionData = await APIClient.getRegionAnalysis();
+            updateRegionChartData(regionData);
+            showNotification('Region chart updated', 'success');
+        } catch (error) {
+            showNotification('Failed to update region chart', 'error');
+        }
+    }
+
+    async function updateTrendChart() {
+        try {
+            const period = document.getElementById('trendPeriod')?.value;
+            showNotification('Updating trend chart...', 'success');
+            const trendsData = await APIClient.getMonthlyTrends();
+            updateTrendChartData(trendsData);
+            showNotification('Trend chart updated', 'success');
+        } catch (error) {
+            showNotification('Failed to update trend chart', 'error');
+        }
+    }
+
+    async function applyFilters() {
+        const regionFilter = document.getElementById('regionFilter');
+        const caseTypeFilter = document.getElementById('caseTypeFilter');
+        const dateFromFilter = document.getElementById('dateFrom');
+        const dateToFilter = document.getElementById('dateTo');
+
+        const region = regionFilter?.value;
+        const caseType = caseTypeFilter?.value;
+        const dateFrom = dateFromFilter?.value;
+        const dateTo = dateToFilter?.value;
+
+        showNotification('Applying filters...', 'success');
+        document.body.classList.add('loading');
+
+        try {
+            // For now, we'll reload all data since your API doesn't support filtering yet
+            // You can enhance your backend APIs to accept filter parameters
+            await loadInitialData();
+            showNotification('Filters applied successfully', 'success');
+        } catch (error) {
+            showNotification('Failed to apply filters', 'error');
+        } finally {
+            document.body.classList.remove('loading');
+        }
+    }
+
+    async function refreshData() {
+        showNotification('Refreshing data...', 'success');
+        document.body.classList.add('loading');
+
+        try {
+            await loadInitialData();
+            showNotification('Data refreshed successfully', 'success');
+        } catch (error) {
+            showNotification('Failed to refresh data', 'error');
+        } finally {
+            document.body.classList.remove('loading');
+        }
+    }
+
+    async function exportData() {
+        try {
+            showNotification('Exporting report...', 'success');
+
+            const exportData = {
+                generatedAt: new Date().toISOString(),
+                generatedBy: 'Analytics Dashboard',
+                summary: {
+                    totalCases: currentData.statistics?.totalCases || 0,
+                    activeCases: currentData.statistics?.activeCases || 0,
+                    closedCases: currentData.statistics?.closedCases || 0,
+                    reportedCases: currentData.statusSummary?.reportedCases || 0
+                },
+                regionAnalysis: currentData.regions || [],
+                abuseTypeAnalysis: currentData.abuseTypes || [],
+                monthlyTrends: currentData.trends || [],
+                ageGroupAnalysis: currentData.ageGroups || [],
+                activeCases: currentData.activeCases || []
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `analytics-report-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showNotification('Report exported successfully', 'success');
+        } catch (error) {
+            showNotification('Failed to export report', 'error');
+            console.error('Export error:', error);
+        }
+    }
+
+    async function selectCase(caseId) {
+        try {
+            showNotification(`Loading case details for ${caseId}...`, 'success');
+            // You can implement case detail modal or redirect to case detail page
+            console.log('Selected case:', caseId);
+
+            // Example: Open case detail modal or navigate to case page
+            // window.location.href = `/cases/${caseId}`;
+
+        } catch (error) {
+            showNotification('Failed to load case details', 'error');
+        }
+    }
+
+    async function updateCaseStatus(caseId, event) {
+        event.stopPropagation(); // Prevent row click
+
+        try {
+            // Show status update modal or dropdown
+            const newStatus = prompt('Enter new status (REPORTED, RESOLVED, DISMISSED):');
+            if (!newStatus) return;
+
+            showNotification(`Updating case ${caseId} status...`, 'success');
+
+            await APIClient.updateCaseStatus(caseId, newStatus.toUpperCase());
+
+            // Refresh the data to show updated status
+            await loadInitialData();
+
+            showNotification(`Case ${caseId} status updated successfully`, 'success');
+        } catch (error) {
+            showNotification('Failed to update case status', 'error');
+            console.error('Status update error:', error);
+        }
+    }
+
+    // Utility functions
+    function showNotification(message, type = 'info') {
+        // Create notification element if it doesn't exist
+        let notification = document.getElementById('notification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'notification';
+            notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            max-width: 300px;
+        `;
+            document.body.appendChild(notification);
+        }
+
+        // Set notification style based on type
+        const colors = {
+            success: '#16a34a',
+            error: '#dc2626',
+            warning: '#eab308',
+            info: '#2563eb'
+        };
+
+        notification.style.backgroundColor = colors[type] || colors.info;
+        notification.textContent = message;
+        notification.style.display = 'block';
+        notification.style.opacity = '1';
+
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 300);
+        }, 3000);
+    }
+
+    function showErrorMessage(message) {
+        // Create error overlay
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+    `;
+
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        max-width: 500px;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    `;
+
+        modal.innerHTML = `
+        <h3 style="color: #dc2626; margin-bottom: 15px;">Connection Error</h3>
+        <p style="margin-bottom: 20px;">${message}</p>
+        <button onclick="this.closest('.error-overlay').remove()"
+                style="padding: 10px 20px; background: #2563eb; color: white;
+                       border: none; border-radius: 4px; cursor: pointer;">
+            OK
+        </button>
+    `;
+
+        overlay.className = 'error-overlay';
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+    }
+
+    // Initialize when DOM is loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    } else {
+        initializeDashboard();
+    }
+
+    function initializeDashboard() {
+        console.log('Analytics Dashboard initialized');
+        // Additional initialization if needed
+    }
+</script>

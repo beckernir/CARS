@@ -1,0 +1,236 @@
+
+
+
+
+
+<!-- Footer Fragment for Thymeleaf -->
+<!-- This is a Thymeleaf fragment that can be included in any page -->
+<footer id="footer" class="footer" th:fragment="footer">
+    <!-- CSS styles for the footer fragment -->
+    <style th:fragment="footer-styles">
+        /* Main System Variables */
+        :root {
+            --primary-color: #026dae; /* Primary blue */
+            --secondary-color: #3b82f6; /* Medium blue */
+            --accent-color: #0288d1; /* Deeper blue */
+            --light-accent: #e0f2fe; /* Light blue background */
+            --text-color: #333333;
+            --light-gray: #f8f9fa;
+            --border-color: #e9ecee;
+        }
+
+        /* Footer Core Styles */
+        .footer {
+            background: var(--light-gray);
+            padding: 50px 0 0 0;
+            font-size: 15px;
+            color: var(--text-color);
+        }
+
+        .footer .footer-info .logo {
+            margin-bottom: 25px;
+            display: inline-block;
+        }
+
+        .footer .footer-info .logo span {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .footer .footer-info p {
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Social Media Links */
+        .footer .social-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .footer .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .footer .social-links a:hover {
+            background: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        /* Section Headings */
+        .footer h4 {
+            font-size: 18px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .footer h4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 2px;
+            width: 30px;
+            background-color: var(--accent-color);
+        }
+
+        /* Quick Links */
+        .footer .footer-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer .footer-links ul li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer .footer-links ul li:first-child {
+            padding-top: 0;
+        }
+
+        .footer .footer-links ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .footer .footer-links ul li a:before {
+            content: "\f054";
+            font-family: "bootstrap-icons";
+            font-size: 12px;
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        .footer .footer-links ul li a:hover {
+            color: var(--primary-color);
+            padding-left: 20px;
+        }
+
+        /* Contact Information */
+        .footer .footer-contact p {
+            line-height: 26px;
+            margin-bottom: 15px;
+        }
+
+        .footer .footer-contact p strong {
+            color: var(--primary-color);
+        }
+
+        /* Copyright Section */
+        .footer .copyright {
+            text-align: center; !important;
+            /*padding: 25px 0 20px 0;*/
+            border-top: 1px solid var(--border-color);
+            margin-top: 30px;
+        }
+
+        .footer .copyright p {
+            margin-bottom: 5px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .footer .footer-links,
+            .footer .footer-contact {
+                margin-top: 30px;
+            }
+
+            .footer h4 {
+                margin-top: 10px;
+            }
+
+            .footer .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <div class="row gy-4">
+            <!-- Company Information -->
+            <div class="col-lg-5 col-md-12 footer-info">
+                <a th:href="@{/}" class="logo">
+                    <span th:text="${siteName ?: 'Child Protection Services'}">Child Protection Services</span>
+                </a>
+                <p th:text="${orgMission ?: 'Working together to protect children from abuse and neglect. Our mission is to ensure every child grows up in a safe, nurturing environment free from harm.'}">
+                    Working together to protect children from abuse and neglect. Our mission is to ensure every child grows up in a safe, nurturing environment free from harm.
+                </p>
+                <div class="social-links">
+                    <a th:href="${twitterUrl ?: '#'}" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                    <a th:href="${facebookUrl ?: '#'}" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a th:href="${instagramUrl ?: '#'}" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a th:href="${linkedinUrl ?: '#'}" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    <a th:href="${youtubeUrl ?: '#'}" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-6 footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a th:href="@{/}">Home</a></li>
+                    <li><a th:href="@{/about}">About Us</a></li>
+                    <li><a th:href="@{/services}">Our Services</a></li>
+                    <li><a th:href="@{/resources}">Resources</a></li>
+                    <li><a th:href="@{/contact}">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <!-- Support Services -->
+            <div class="col-lg-2 col-6 footer-links">
+                <h4>Support Services</h4>
+                <ul>
+                    <li><a th:href="@{/abuse-recognition}">Abuse Recognition</a></li>
+                    <li><a th:href="@{/reporting}">Reporting Guidelines</a></li>
+                    <li><a th:href="@{/victim-support}">Victim Support</a></li>
+                    <li><a th:href="@{/family-resources}">Family Resources</a></li>
+                    <li><a th:href="@{/prevention}">Prevention Programs</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="col-lg-3 col-md-12 footer-contact">
+                <h4>Contact Us</h4>
+                <p>
+                    <span th:text="${orgAddress1 ?: '123 Safe Haven Street'}">123 Safe Haven Street</span><br>
+                    <span th:text="${orgAddress2 ?: 'Anytown, ST 12345'}">Anytown, ST 12345</span><br>
+                    <span th:text="${orgCountry ?: 'United States'}">United States</span><br><br>
+                    <strong>24/7 Helpline:</strong> <span th:text="${helplinePhone ?: '1-800-422-4453'}">1-800-422-4453</span><br>
+                    <strong>Office:</strong> <span th:text="${officePhone ?: '1-888-555-SAFE'}">1-888-555-SAFE</span><br>
+                    <strong>Email:</strong> <span th:text="${contactEmail ?: 'info@childprotection.org'}">info@childprotection.org</span><br>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copyright Section -->
+    <div class="container">
+        <div class="copyright text-center">
+            <p>© <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span> <strong th:text="${siteName ?: 'Child Protection Services'}">Child Protection Services</strong>. All Rights Reserved</p>
+            <div class="credits" th:text="${tagline ?: 'Dedicated to the safety and wellbeing of all children'}">
+                Dedicated to the safety and wellbeing of all children
+            </div>
+        </div>
+    </div>
+</footer>
+

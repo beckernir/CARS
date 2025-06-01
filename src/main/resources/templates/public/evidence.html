@@ -1,0 +1,145 @@
+<!-- Upload Evidence Section -->
+<section id="upload-evidence" class="page-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="mb-4">Upload Evidence</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-header">
+            Add Evidence to Existing Case
+          </div>
+          <div class="card-body">
+            <form>
+              <div class="mb-3">
+                <label class="form-label">Select Case</label>
+                <select class="form-select">
+                  <option selected>Choose a case...</option>
+                  <option>CARS-2025-001 - Physical Abuse</option>
+                  <option>CARS-2025-002 - Neglect</option>
+                  <option>CARS-2025-003 - Emotional Abuse (Resolved)</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Evidence Type</label>
+                <select class="form-select">
+                  <option selected>Select type...</option>
+                  <option>Photo</option>
+                  <option>Video</option>
+                  <option>Audio</option>
+                  <option>Document</option>
+                  <option>Medical Report</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Date of Evidence</label>
+                <input type="date" class="form-control">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" rows="3" placeholder="Describe what this evidence shows"></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Upload Files</label>
+                <input class="form-control" type="file" multiple>
+                <div class="form-text">Supported formats: JPG, PNG, PDF, MP4, MP3. Max size: 50MB per file.</div>
+              </div>
+
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-primary">Upload Evidence</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            Previously Uploaded Evidence
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                <tr>
+                  <th>Date</th>
+                  <th>Case ID</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>May 15, 2025</td>
+                  <td>CARS-2025-001</td>
+                  <td>Photo</td>
+                  <td>Visible bruising on arm</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary">View</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>May 10, 2025</td>
+                  <td>CARS-2025-002</td>
+                  <td>Document</td>
+                  <td>School attendance records</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary">View</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>April 28, 2025</td>
+                  <td>CARS-2025-003</td>
+                  <td>Audio</td>
+                  <td>Recorded verbal abuse</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary">View</button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-header">
+            Evidence Guidelines
+          </div>
+          <div class="card-body">
+            <h6>Acceptable Evidence:</h6>
+            <ul>
+              <li>Photos of injuries or conditions</li>
+              <li>Videos showing abuse or neglect</li>
+              <li>Audio recordings of relevant conversations</li>
+              <li>Medical reports or school records</li>
+              <li>Witness statements</li>
+            </ul>
+            <h6>Important Notes:</h6>
+            <ul>
+              <li>All evidence is confidential and encrypted</li>
+              <li>Only authorized authorities can access your uploads</li>
+              <li>Do not endanger yourself when collecting evidence</li>
+              <li>Do not alter or edit any evidence files</li>
+            </ul>
+            <div class="alert alert-info" role="alert">
+              <i class="fas fa-info-circle me-2"></i>
+              Evidence submitted may be used in legal proceedings if necessary.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
