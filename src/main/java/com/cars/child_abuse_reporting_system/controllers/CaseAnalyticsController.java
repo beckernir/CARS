@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/analytics")
+@RequestMapping("/api/v1/admin/analytics")
 @CrossOrigin(origins = "*")
 public class CaseAnalyticsController {
 
