@@ -1,11 +1,7 @@
 package com.cars.child_abuse_reporting_system.viewControllers;
 
 
-import com.cars.child_abuse_reporting_system.dtos.*;
-import com.cars.child_abuse_reporting_system.entities.CaseReport;
 import com.cars.child_abuse_reporting_system.entities.User;
-import com.cars.child_abuse_reporting_system.enums.CaseStatus;
-import com.cars.child_abuse_reporting_system.services.CaseReportService;
 import com.cars.child_abuse_reporting_system.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Collection;
-import java.util.List;
 
 @Controller
 @RequestMapping("/")
@@ -26,9 +21,6 @@ public class HomeViewController {
 
     @Autowired
     private UserService userService; // Inject your user service
-
-    @Autowired
-    private CaseReportService caseReportService;
 
     private void addUserDataToModel(Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
@@ -69,54 +61,16 @@ public class HomeViewController {
     public String signUpPage() {
         return "signup-page";
     }
-//
-//    @GetMapping("/admin-dashboard")
-//    public String adminDashboard(Model model, Authentication authentication) {
-//        addUserDataToModel(model, authentication);
-//        return "/admin/admin-dashboard";
-//    }
-    /**
-     * Main dashboard page
-     */
+
     @GetMapping("/admin-dashboard")
-    public String getDashboard(Model model) {
-        try {
-            // Get all analytics data
-            DashboardAnalyticsDTO analytics = caseReportService.getDashboardAnalytics();
-            CaseStatisticsDTO statistics = caseReportService.getCaseStatistics();
-            List<AgeGroupAnalysisDTO> ageAnalysis = caseReportService.getAgeGroupAnalysis();
-            List<RegionAnalysisDTO> regionAnalysis = caseReportService.getRegionAnalysis();
-            List<AbuseTypeAnalysisDTO> abuseTypeAnalysis = caseReportService.getAbuseTypeAnalysis();
-            List<MonthlyTrendDTO> monthlyTrends = caseReportService.getMonthlyTrends();
-            List<CaseReport> recentCases = caseReportService.getActiveCases();
-
-            // Limit recent cases to last 10 for display
-            if (recentCases.size() > 10) {
-                recentCases = recentCases.subList(0, 10);
-            }
-
-            // Add all data to model
-            model.addAttribute("analytics", analytics);
-            model.addAttribute("statistics", statistics);
-            model.addAttribute("ageAnalysis", ageAnalysis);
-            model.addAttribute("regionAnalysis", regionAnalysis);
-            model.addAttribute("abuseTypeAnalysis", abuseTypeAnalysis);
-            model.addAttribute("monthlyTrends", monthlyTrends);
-            model.addAttribute("recentCases", recentCases);
-            model.addAttribute("caseStatuses", CaseStatus.values());
-
-
-            return "/admin/admin-dashboard";
-        } catch (Exception e) {
-            model.addAttribute("error", "Failed to load dashboard data: " + e.getMessage());
-            return "error";
-        }
+    public String adminDashboard(Model model, Authentication authentication) {
+        addUserDataToModel(model, authentication);
+        return "/admin/admin-case-report-list";
     }
-
 
     @GetMapping("/public-dashboard")
     public String publicWorkerDashboard() {
-        return "/public/my-cases";
+        return "/public/user-dashboard";
     }
 
     @GetMapping("/authority-dashboard")
@@ -147,7 +101,7 @@ public class HomeViewController {
                 return "redirect:/api/v1/authority/allCases";
 
             } else if (role.equals("ROLE_PUBLIC")) {
-                return "redirect:/api/v1/public/allCases";
+                return "redirect:/public-dashboard";
 
             }
         }

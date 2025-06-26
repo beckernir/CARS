@@ -235,55 +235,6 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="caseTable" class="display table table-striped table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Case ID</th>
-                                            <th>Child Name</th>
-                                            <th>Abuse Type</th>
-                                            <th>Status</th>
-                                            <th>Location</th>
-                                            <th>Date Reported</th>
-                                            <th style="width: 15%">Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="report : ${caseReports}">
-                                            <td></td>
-                                            <td th:text="${report.caseId}">CASE-2023-001</td>
-                                            <td th:text="${report.childFullName}">John Doe</td>
-                                            <td>
-                                                <span th:class="${'badge badge-abuse-type badge-' + #strings.toLowerCase(report.abuseType)}"
-                                                      th:text="${report.abuseType}">Physical</span>
-                                            </td>
-                                            <td>
-                                                <span th:class="${'table-status status-' + #strings.toLowerCase(report.status)}"></span>
-                                                <span th:text="${report.status}">Open</span>
-                                            </td>
-                                            <td th:text="${report.locationOfIncident}">123 Main St</td>
-                                            <td th:text="${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}">2023-05-15 14:30</td>
-                                            <td class="action-buttons">
-                                                <!-- Button group to align buttons horizontally -->
-                                                <div class="btn-group" role="group" aria-label="Action buttons">
-                                                    <!-- View Button -->
-                                                    <a class="btn btn-primary btn-sm" th:href="@{/api/v1/admin/view/{id}(id=${report.id})}" title="View">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    <!-- Assign to Authorities Button (Replaced Edit Button) -->
-                                                    <a class="btn btn-warning btn-sm" th:href="@{/api/v1/case-reports/assign/{id}(id=${report.id})}" title="Assign to Authorities">
-                                                        <i class="fas fa-user-shield"></i>
-                                                    </a>
-                                                    <!-- Delete Button -->
-                                                    <a class="btn btn-danger btn-sm" th:href="@{/api/v1/admin/delete/{id}(id=${report.id})}"
-                                                       th:attr="onclick='return confirmDelete(event, this.href)'" title="Delete">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>
