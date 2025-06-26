@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>CARS - Child Abuse Reporting System</title>
+    <meta name="description" content="CARS - A secure platform for reporting and managing child abuse cases">
+    <meta name="keywords" content="child protection, abuse reporting, child welfare, child safety">
+
+    <!-- Google Fonts (keeping CDN for fonts) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+
+    <!-- Essential CSS from CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Inlined CSS Styles -->
+    <style>
+        /* Main Website Variables */
+        :root {
+            --primary-color: #026dae; /* Primary blue */
+            --secondary-color: #3b82f6; /* Medium blue */
+            --accent-color: #0288d1; /* Deeper blue */
+            --light-accent: #e0f2fe; /* Light blue background */
+            --text-color: #333333;
+        }
+
+        /* Core Website Styles */
+        body {
+            font-family: "Roboto", sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: "Raleway", sans-serif;
+            font-weight: 700;
+        }
+
+        section {
+            padding: 80px 0;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background: white;
+            box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.3);
+            height: 80px;
+            z-index: 1000;
+        }
+
+        .logo img {
+            max-height: 50px;
+            margin-right: 15px;
+        }
+
+        .sitename {
+            color: var(--primary-color);
+            font-size: 26px;
+            font-weight: 700;
+            font-family: "Raleway", sans-serif;
+        }
+
+        .navmenu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .navmenu li {
+            padding: 10px 20px;
+        }
+
+        .navmenu a,
+        .navmenu a:focus {
+            color: var(--text-color);
+            font-family: "Raleway", sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .navmenu a:hover,
+        .navmenu .active,
+        .navmenu .active:focus {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .btn-login {
+            padding: 10px 20px;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 4px;
+            margin-left: 20px;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-report {
+            background-color: #dc3545; /* Red color for emergency reporting */
+            border-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-left: 10px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .btn-report:hover {
+            background-color: #b02a37;
+            border-color: #b02a37;
+            color: white;
+        }
+
+        .mobile-nav-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 28px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--light-accent);
+            padding: 100px 0;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .hero-img img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-get-started {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .btn-get-started:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-emergency {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: 0.3s;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .btn-emergency:hover {
+            background-color: #b02a37;
+            border-color: #b02a37;
+            color: white;
+        }
+
+        /* Section Titles */
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title span {
+            color: var(--secondary-color);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 0;
+            line-height: 1px;
+            margin: 0 0 5px 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            position: relative;
+            color: var(--primary-color);
+        }
+
+        .section-title h2::after {
+            content: "";
+            position: absolute;
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-color);
+            bottom: 0;
+            left: calc(50% - 25px);
+        }
+
+        .section-title p {
+            margin-bottom: 0;
+            font-size: 18px;
+        }
+
+        /* Featured Services */
+        .featured-services .service-item {
+            padding: 30px;
+            transition: 0.3s;
+            background: #fff;
+            height: 100%;
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .featured-services .service-item .icon {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .featured-services .service-item h4 {
+            font-weight: 700;
+            margin: 0 0 15px 0;
+            font-size: 20px;
+        }
+
+        .featured-services .service-item h4 a {
+            color: var(--text-color);
+            transition: 0.3s;
+        }
+
+        .featured-services .service-item h4 a:hover {
+            color: var(--primary-color);
+        }
+
+        .featured-services .service-item p {
+            line-height: 24px;
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
+        .featured-services .service-item:hover {
+            transform: translateY(-10px);
+        }
+
+        /* About Section */
+        .about .content h3 {
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .about .content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .about .content ul li {
+            padding-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .about .content ul i {
+            font-size: 16px;
+            margin-right: 15px;
+            color: var(--primary-color);
+            margin-top: 5px;
+        }
+
+        .about .content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about img {
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Stats Section */
+        .stats {
+            background: #f8f9fa;
+            padding: 70px 0;
+        }
+
+        .stats .stats-item {
+            padding: 30px;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .stats .stats-item span {
+            font-size: 42px;
+            display: block;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stats .stats-item p {
+            padding: 0;
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Call To Action Section */
+        .call-to-action {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 70px 0;
+        }
+
+        .call-to-action h3 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .call-to-action p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            font-weight: 500;
+            font-size: 16px;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 4px;
+            transition: 0.5s;
+            background: transparent;
+            border: 2px solid white;
+        }
+
+        .cta-btn:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Contact Section */
+        .contact .info-item {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 5px;
+            height: 100%;
+        }
+
+        .contact .info-item i {
+            font-size: 24px;
+            color: var(--primary-color);
+            float: left;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50px;
+            transition: all 0.3s ease-in-out;
+            margin-right: 15px;
+            background: rgba(26, 86, 219, 0.1);
+        }
+
+        .contact .info-item h3 {
+            font-size: 20px;
+            color: var(--text-color);
+            font-weight: 600;
+            margin: 0 0 5px 60px;
+        }
+
+        .contact .info-item p {
+            font-size: 15px;
+            color: #6c757d;
+            margin: 0 0 0 60px;
+            line-height: 24px;
+        }
+
+        .contact .php-email-form {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 5px;
+        }
+
+        .contact .php-email-form button[type=submit] {
+            background: var(--primary-color);
+            border: 0;
+            padding: 10px 30px;
+            color: #fff;
+            transition: 0.4s;
+            border-radius: 4px;
+        }
+
+        .contact .php-email-form button[type=submit]:hover {
+            background: var(--accent-color);
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 50px 0 0 0;
+            font-size: 15px;
+        }
+
+        .footer .footer-info .logo {
+            margin-bottom: 30px;
+        }
+
+        .footer .footer-info .logo span {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .footer .footer-info p {
+            margin-bottom: 30px;
+        }
+
+        .footer .social-links {
+            margin-top: 30px;
+            display: flex;
+        }
+
+        .footer .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--primary-color);
+            color: white;
+            margin-right: 10px;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .footer .social-links a:hover {
+            background: var(--accent-color);
+        }
+
+        .footer .footer-links h4 {
+            font-size: 16px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 12px;
+            color: var(--primary-color);
+        }
+
+        .footer .footer-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer .footer-links ul li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer .footer-links ul li:first-child {
+            padding-top: 0;
+        }
+
+        .footer .footer-contact h4 {
+            font-size: 16px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 12px;
+            color: var(--primary-color);
+        }
+
+        .footer .footer-contact p {
+            line-height: 26px;
+            margin-bottom: 15px;
+        }
+
+        .footer .copyright {
+            text-align: center;
+            padding: 30px 0 20px 0;
+            border-top: 1px solid #e9ecee;
+            margin-top: 30px;
+        }
+
+        /* Image Animation */
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .animated-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            animation: floatUpDown 3s infinite ease-in-out;
+        }
+
+        @keyframes floatUpDown {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Emergency Button */
+        .emergency-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            background-color: #dc3545;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .emergency-button:hover {
+            background-color: #b02a37;
+            transform: scale(1.05);
+            color: white;
+        }
+
+        .emergency-button i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body class="index-page">
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+
+<main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                    <h1>Protecting Every Child's Right to Safety</h1>
+                    <p>CARS provides a secure and confidential platform for reporting child abuse and connecting vulnerable children with the support services they need.</p>
+                    <div class="d-flex">
+                        <a href="/api/v1/cases/new" class="btn-emergency">Report Abuse Now</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 order-1 order-lg-2 hero-img">
+                    <div class="image-container">
+                        <img src="/assets/img/stop-abuse.png" alt="Children Protection" class="animated-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- /Hero Section -->
+
+    <!-- Featured Services Section -->
+    <section id="features" class="featured-services section">
+        <div class="container section-title">
+            <span>How We Help</span>
+            <h2>Our Services</h2>
+            <p>Comprehensive child protection services to safeguard vulnerable children</p>
+        </div>
+
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4 d-flex">
+                    <div class="service-item position-relative">
+                        <div class="icon"><i class="bi bi-megaphone icon"></i></div>
+                        <h4><a href="" class="stretched-link">Abuse Reporting</a></h4>
+                        <p>Secure and confidential reporting system for suspected child abuse cases</p>
+                    </div>
+                </div><!-- End Service Item -->
+
+                <div class="col-lg-4 d-flex">
+                    <div class="service-item position-relative">
+                        <div class="icon"><i class="bi bi-people icon"></i></div>
+                        <h4><a href="" class="stretched-link">Support Services</a></h4>
+                        <p>Connection to immediate intervention and long-term support for affected children</p>
+                    </div>
+                </div><!-- End Service Item -->
+
+                <div class="col-lg-4 d-flex">
+                    <div class="service-item position-relative">
+                        <div class="icon"><i class="bi bi-bandaid icon"></i></div>
+                        <h4><a href="" class="stretched-link">Crisis Intervention</a></h4>
+                        <p>Emergency response and immediate protection for children in dangerous situations</p>
+                    </div>
+                </div><!-- End Service Item -->
+            </div>
+
+            <div class="row gy-4 mt-4">
+                <div class="col-lg-4 d-flex">
+                    <div class="service-item position-relative">
+                        <div class="icon"><i class="bi bi-book icon"></i></div>
+                        <h4><a href="" class="stretched-link">Education & Prevention</a></h4>
+                        <p>Resources for parents, educators, and communities to prevent child abuse</p>
+                    </div>
+                </div><!-- End Service Item -->
+
+                <div class="col-lg-4 d-flex">
+                    <div class="service-item position-relative">
+                        <div class="icon"><i class="bi bi-graph-up icon"></i></div>
+                        <h4><a href="" class="stretched-link">Case Tracking</a></h4>
+                        <p>Secure management and tracking of reported cases from submission to resolution</p>
+                    </div>
+                </div><!-- End Service Item -->
+
+                <div class="col-lg-4 d-flex">
+                    <div class="service-item position-relative">
+                        <div class="icon"><i class="bi bi-headset icon"></i></div>
+                        <h4><a href="" class="stretched-link">24/7 Helpline</a></h4>
+                        <p>Round-the-clock support through our telephone helpline for urgent situations</p>
+                    </div>
+                </div><!-- End Service Item -->
+            </div>
+        </div>
+    </section><!-- /Featured Services Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+        <!-- Section Title -->
+        <div class="container section-title">
+            <span>Who We Are</span>
+            <h2>About CARS</h2>
+            <p>Dedicated to creating safer environments for all children through protection, intervention, and advocacy</p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-6 position-relative align-self-start">
+                    <div class="image-container">
+                        <img src="/assets/img/logo.png" alt="Child Protection" class="animated-image">
+                    </div>
+                </div>
+                <div class="col-lg-6 content">
+                    <h3>Our mission is to protect every child from abuse and neglect.</h3>
+                    <p class="fst-italic">
+                        CARS was established to provide a comprehensive system for reporting, tracking, and responding to child abuse cases while connecting children and families with vital support services.
+                    </p>
+                    <ul>
+                        <li><i class="bi bi-check2-all"></i> <span>Create safe, accessible channels for reporting suspected child abuse.</span></li>
+                        <li><i class="bi bi-check2-all"></i> <span>Ensure rapid response and intervention in cases of child endangerment.</span></li>
+                        <li><i class="bi bi-check2-all"></i> <span>Connect children and families with appropriate support services and resources.</span></li>
+                    </ul>
+                    <p>
+                        Our team consists of child protection specialists, social workers, counselors, and technology experts working together to safeguard children's wellbeing. We collaborate closely with law enforcement, schools, healthcare providers, and community organizations to create a comprehensive safety net for vulnerable children.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section><!-- /About Section -->
+
+    <!-- Resources Section -->
+    <section id="resources" class="about section">
+        <!-- Section Title -->
+        <div class="container section-title">
+            <span>Learn More</span>
+            <h2>Resources</h2>
+            <p>Educational materials to help identify, prevent, and respond to child abuse</p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-6 content order-2 order-lg-1">
+                    <h3>Knowledge is the first step in protecting children.</h3>
+                    <p>
+                        We provide comprehensive resources for parents, educators, healthcare professionals, and community members to recognize the signs of abuse, understand reporting obligations, and help prevent child maltreatment.
+                    </p>
+                    <ul>
+                        <li><i class="bi bi-check2-all"></i> <span>Educational materials about recognizing signs of different types of abuse</span></li>
+                        <li><i class="bi bi-check2-all"></i> <span>Guidelines for mandatory reporters and concerned citizens</span></li>
+                        <li><i class="bi bi-check2-all"></i> <span>Prevention strategies for families and communities</span></li>
+                        <li><i class="bi bi-check2-all"></i> <span>Safety planning resources for children and caregivers</span></li>
+                    </ul>
+                    <div class="mt-4">
+                        <a href="/resources" class="btn-get-started">Access Resources</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 position-relative align-self-start order-1 order-lg-2">
+                    <div class="image-container">
+                        <img src="/api/placeholder/500/400" alt="Education Resources" class="animated-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- /Resources Section -->
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section">
+        <!-- Section Title -->
+        <div class="container section-title">
+            <span>Report Safely</span>
+            <h2>Child Protection Helpline</h2>
+            <p>If you suspect a child is in immediate danger, please call emergency services (911) immediately. For non-emergency reports or support, use the contact options below.</p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-6">
+                    <div class="row gy-4">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <i class="bi bi-geo-alt"></i>
+                                <h3>Office Location</h3>
+                                <p>Child Protection Center</p>
+                                <p>123 Safe Haven Street</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <i class="bi bi-telephone"></i>
+                                <h3>24/7 Helpline</h3>
+                                <p><strong>Emergency:</strong> 1-800-422-4453</p>
+                                <p><strong>Support Line:</strong> 1-888-555-SAFE</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <i class="bi bi-envelope"></i>
+                                <h3>Email Contact</h3>
+                                <p>report@childprotection.org</p>
+                                <p>support@childprotection.org</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <i class="bi bi-shield-check"></i>
+                                <h3>Confidentiality</h3>
+                                <p>All reports are confidential</p>
+                                <p>Anonymous reporting available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <form action="#" method="post" class="php-email-form">
+                        <div class="alert alert-info">
+                            <strong>Important:</strong> This form is for non-emergency reports. If a child is in immediate danger, please call emergency services at 911 or our 24/7 helpline at 1-800-422-4453.
+                        </div>
+
+                        <div class="row gy-4">
+                            <div class="col-md-6">
+                                <label for="name-field" class="pb-2">Your Name (Optional)</label>
+                                <input type="text" name="name" id="name-field" class="form-control">
+                                <small class="text-muted">You may report anonymously</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email-field" class="pb-2">Your Email (Optional)</label>
+                                <input type="email" class="form-control" name="email" id="email-field">
+                                <small class="text-muted">For follow-up if needed</small>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="report-type" class="pb-2">Report Type</label>
+                                <select class="form-control" id="report-type" name="report-type" required>
+                                    <option value="">Select report type</option>
+                                    <option value="physical">Physical Abuse</option>
+                                    <option value="emotional">Emotional Abuse</option>
+                                    <option value="sexual">Sexual Abuse</option>
+                                    <option value="neglect">Neglect</option>
+                                    <option value="other">Other Concern</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="location-field" class="pb-2">Location/Address of Concern</label>
+                                <input type="text" class="form-control" name="location" id="location-field" required>
+                                <small class="text-muted">Please be as specific as possible</small>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="message-field" class="pb-2">Report Details</label>
+                                <textarea class="form-control" name="message" rows="10" id="message-field" required placeholder="Please provide detailed information about what you have observed or know. Include the child's name, age, and appearance if possible, as well as any other individuals involved."></textarea>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="follow-up-check" name="follow-up">
+                                    <label class="form-check-label" for="follow-up-check">
+                                        I am willing to be contacted for additional information
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 text-center">
+                                <div class="loading">Processing</div>
+                                <div class="error-message"></div>
+                                <div class="sent-message">Your report has been submitted. A case worker will review it promptly. Thank you for helping protect children.</div>
+
+                                <button type="submit" class="btn btn-primary">Submit Report</button>
+                            </div>
+                        </div>
+                    </form>
+                </div><!-- End Contact Form -->
+            </div>
+        </div>
+    </section><!-- /Contact Section -->
+</main>
+
+<footer id="footer" class="footer">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-5 col-md-12 footer-info">
+                <a href="index.html" class="logo d-flex align-items-center">
+                    <span>Child Protection Services</span>
+                </a>
+                <p>Working together to protect children from abuse and neglect. Our mission is to ensure every child grows up in a safe, nurturing environment free from harm.</p>
+                <div class="social-links d-flex mt-4">
+                    <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6 footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#about">About Our Services</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                    <li><a href="#faq">FAQs</a></li>
+                    <li><a href="#contact">Report Abuse</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-6 footer-links">
+                <h4>Support Services</h4>
+                <ul>
+                    <li><a href="#">Abuse Recognition</a></li>
+                    <li><a href="#">Reporting Guidelines</a></li>
+                    <li><a href="#">Victim Support</a></li>
+                    <li><a href="#">Family Resources</a></li>
+                    <li><a href="#">Prevention Programs</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6 footer-contact text-center text-md-start">
+                <h4>Contact Information</h4>
+                <p>
+                    123 Safe Haven Street<br>
+                    Anytown, ST 12345<br>
+                    United States <br><br>
+                    <strong>24/7 Helpline:</strong> 1-800-422-4453<br>
+                    <strong>Office:</strong> 1-888-555-SAFE<br>
+                    <strong>Email:</strong> info@childprotection.org<br>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">Child Protection Services</strong> <span>All Rights Reserved</span></p>
+        <div class="credits">
+            Dedicated to the safety and wellbeing of all children
+        </div>
+    </div>
+</footer>
+
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Simple inline JavaScript to replace external libraries -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile Navigation Toggle
+        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileNavToggle) {
+            mobileNavToggle.addEventListener('click', function () {
+                mobileMenu.classList.toggle('show-mobile-menu');
+                this.classList.toggle('bi-list');
+                this.classList.toggle('bi-x');
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+
+                    // Close mobile menu if open
+                    if (mobileMenu && mobileMenu.classList.contains('show-mobile-menu')) {
+                        mobileMenu.classList.remove('show-mobile-menu');
+                        mobileNavToggle.classList.add('bi-list');
+                        mobileNavToggle.classList.remove('bi-x');
+                    }
+                }
+            });
+        });
+
+        // Scroll to top button
+        const scrollTop = document.querySelector('.scroll-top');
+
+        if (scrollTop) {
+            const toggleScrollTop = function () {
+                if (window.scrollY > 100) {
+                    scrollTop.classList.add('active');
+                } else {
+                    scrollTop.classList.remove('active');
+                }
+            };
+
+            window.addEventListener('load', toggleScrollTop);
+            document.addEventListener('scroll', toggleScrollTop);
+
+            scrollTop.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Form validation enhancement
+        const reportForm = document.querySelector('.php-email-form');
+        if (reportForm) {
+            reportForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Basic form validation logic would go here
+                // This is a placeholder for actual form submission code
+
+                const loadingElement = this.querySelector('.loading');
+                const sentElement = this.querySelector('.sent-message');
+
+                if (loadingElement) loadingElement.style.display = 'block';
+
+                // Simulate form submission
+                setTimeout(function() {
+                    if (loadingElement) loadingElement.style.display = 'none';
+                    if (sentElement) sentElement.style.display = 'block';
+
+                    // Reset form after submission
+                    setTimeout(function() {
+                        reportForm.reset();
+                        if (sentElement) sentElement.style.display = 'none';
+                    }, 5000);
+                }, 2000);
+            });
+        }
+    });
+</script>
+</body>
+</html>

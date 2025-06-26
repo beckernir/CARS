@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>CARS - Child Abuse Reporting System</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+
+    <!-- Fonts and icons -->
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["../static/assets/css/fonts.min.css"],
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/plugins.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/kaiadmin.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/sidebar-override.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/navbar-override.css}" rel="stylesheet" />
+    <script src="../../static/assets/js/sidebar.js"></script>
+    <link th:href="@{/assets/css/public-footer.css}" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #026dae;
+            --primary-light: rgba(2, 109, 174, 0.1);
+            --primary-medium: rgba(2, 109, 174, 0.3);
+            --primary-dark: #024c7a;
+            --secondary-color: #f8f9fa;
+            --text-dark: #333;
+            --text-light: #666;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Public Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        /* Remove sidebar spacing and make content full width */
+        .wrapper {
+            width: 100%;
+        }
+
+        .main-panel {
+            width: 100% !important;
+            margin-left: 0 !important;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            padding: 0;
+        }
+
+        /* Main Content - Full width */
+        .main-content {
+            width: 100%;
+            max-width: 100%;
+            padding: 2rem;
+            margin: 0;
+        }
+
+        .page-header {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .page-header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .page-header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Statistics Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-number {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Charts Grid - 2x2 layout */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .chart-header h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .chart-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .chart-option-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            background: var(--white);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            color: var(--text-dark);
+        }
+
+        .chart-option-btn.active,
+        .chart-option-btn:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        .chart-container.large {
+            height: 450px;
+        }
+
+        /* Data Table Section */
+        .data-table-section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .data-table-section h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .export-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-export {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-export:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--primary-light);
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .data-table tr:hover {
+            background: var(--secondary-color);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1000px) {
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .chart-card {
+                padding: 1.5rem;
+            }
+
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .export-section {
+                justify-content: center;
+            }
+
+            .data-table-section {
+                padding: 1.5rem;
+                overflow-x: auto;
+            }
+
+            .data-table {
+                min-width: 600px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .export-section {
+                flex-direction: column;
+            }
+
+            .btn-export {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <div class="main-panel">
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+        <div class="dashboard-container">
+            <!-- Main Content -->
+            <main class="main-content">
+                <header class="page-header">
+                    <h1>Advanced Analytics</h1>
+                    <p>Comprehensive analysis and reporting of child abuse cases</p>
+                </header>
+
+                <!-- Statistics Overview -->
+                <section class="stats-overview">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-number" th:text="${statistics.totalCases}">245</div>
+                        <div class="stat-label">Total Cases</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-eye"></i></div>
+                        <div class="stat-number" th:text="${statistics.activeCases}">42</div>
+                        <div class="stat-label">Active Cases</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-number">189</div>
+                        <div class="stat-label">Resolved Cases</div>
+                    </div>
+                </section>
+
+                <!-- Charts Section -->
+                <section class="charts-section">
+                    <!-- Monthly Trends Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Monthly Trends</h3>
+                            <div class="chart-options">
+                                <button class="chart-option-btn active" onclick="switchTimelineView('line')">Line</button>
+                                <button class="chart-option-btn" onclick="switchTimelineView('bar')">Bar</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="monthlyTrendsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Abuse Types Distribution -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Abuse Types Distribution</h3>
+                            <div class="chart-options">
+                                <button class="chart-option-btn active" onclick="switchAbuseTypeView('doughnut')">Doughnut</button>
+                                <button class="chart-option-btn" onclick="switchAbuseTypeView('pie')">Pie</button>
+                                <button class="chart-option-btn" onclick="switchAbuseTypeView('bar')">Bar</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="abuseTypesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Regional Analysis -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Regional Analysis</h3>
+                            <div class="chart-options">
+                                <button class="chart-option-btn active" onclick="switchRegionalView('bar')">Bar</button>
+                                <button class="chart-option-btn" onclick="switchRegionalView('horizontalBar')">Horizontal</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="regionalChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Age Group Analysis -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Age Group Analysis</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="ageGroupChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+
+            </main>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    // Get data from Thymeleaf
+    let monthlyTrendsData = /*[[${monthlyTrends}]]*/ [
+        {month: 'Jan', totalCases: 15},
+        {month: 'Feb', totalCases: 22},
+        {month: 'Mar', totalCases: 18},
+        {month: 'Apr', totalCases: 28},
+        {month: 'May', totalCases: 35},
+        {month: 'Jun', totalCases: 25}
+    ];
+
+    let abuseTypeAnalysisData = /*[[${abuseTypeAnalysis}]]*/ [
+        {abuseType: 'Physical Abuse', totalCases: 45},
+        {abuseType: 'Emotional Abuse', totalCases: 38},
+        {abuseType: 'Neglect', totalCases: 52},
+        {abuseType: 'Sexual Abuse', totalCases: 23},
+        {abuseType: 'Other', totalCases: 15}
+    ];
+
+    let regionAnalysisData = /*[[${regionAnalysis}]]*/ [
+        {region: 'Kigali', totalCases: 78},
+        {region: 'Northern', totalCases: 45},
+        {region: 'Southern', totalCases: 62},
+        {region: 'Eastern', totalCases: 38},
+        {region: 'Western', totalCases: 42}
+    ];
+
+    let ageAnalysisData = /*[[${ageAnalysis}]]*/ [
+        {ageGroup: '0-5', totalCases: 45},
+        {ageGroup: '6-10', totalCases: 68},
+        {ageGroup: '11-15', totalCases: 89},
+        {ageGroup: '16-18', totalCases: 43}
+    ];
+
+    // Chart instances
+    let monthlyTrendsChart, abuseTypesChart, regionalChart, ageGroupChart;
+
+    // Color scheme based on primary color
+    const colorScheme = {
+        primary: '#026dae',
+        primaryLight: 'rgba(2, 109, 174, 0.1)',
+        primaryMedium: 'rgba(2, 109, 174, 0.3)',
+        gradient: ['#026dae', '#0284c7', '#0ea5e9', '#38bdf8', '#7dd3fc'],
+        charts: ['#026dae', '#0284c7', '#0ea5e9', '#38bdf8', '#7dd3fc', '#bae6fd']
+    };
+
+    function initializeCharts() {
+        try {
+            // Monthly Trends Chart
+            const monthlyCanvas = document.getElementById('monthlyTrendsChart');
+            if (monthlyCanvas && monthlyTrendsData && monthlyTrendsData.length > 0) {
+                const monthlyCtx = monthlyCanvas.getContext('2d');
+                const monthlyLabels = monthlyTrendsData.map(trend => trend.month || trend.monthYear || trend.name || 'Unknown');
+                const monthlyData = monthlyTrendsData.map(trend => trend.totalCases || trend.caseCount || trend.count || 0);
+
+                monthlyTrendsChart = new Chart(monthlyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [{
+                            label: 'Cases Reported',
+                            data: monthlyData,
+                            borderColor: colorScheme.primary,
+                            backgroundColor: colorScheme.primaryLight,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: colorScheme.primary,
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: colorScheme.primary,
+                                    font: { weight: 'bold' }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#e2e8f0' },
+                                ticks: { color: '#666' }
+                            },
+                            x: {
+                                grid: { color: '#e2e8f0' },
+                                ticks: { color: '#666' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Abuse Types Chart
+            const abuseTypesCanvas = document.getElementById('abuseTypesChart');
+            if (abuseTypesCanvas && abuseTypeAnalysisData && abuseTypeAnalysisData.length > 0) {
+                const abuseTypesCtx = abuseTypesCanvas.getContext('2d');
+                const abuseLabels = abuseTypeAnalysisData.map(type => type.abuseType || type.type || type.name || 'Unknown');
+                const abuseData = abuseTypeAnalysisData.map(type => type.totalCases || type.caseCount || type.count || 0);
+
+                abuseTypesChart = new Chart(abuseTypesCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: abuseLabels,
+                        datasets: [{
+                            data: abuseData,
+                            backgroundColor: colorScheme.charts,
+                            borderWidth: 3,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: colorScheme.primary,
+                                    font: { weight: 'bold' },
+                                    padding: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Regional Chart
+            const regionalCanvas = document.getElementById('regionalChart');
+            if (regionalCanvas && regionAnalysisData && regionAnalysisData.length > 0) {
+                const regionalCtx = regionalCanvas.getContext('2d');
+                const regionLabels = regionAnalysisData.map(region => region.region || region.name || 'Unknown');
+                const regionData = regionAnalysisData.map(region => region.totalCases || region.caseCount || region.count || 0);
+
+                regionalChart = new Chart(regionalCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: regionLabels,
+                        datasets: [{
+                            label: 'Cases by Region',
+                            data: regionData,
+                            backgroundColor: colorScheme.primaryMedium,
+                            borderColor: colorScheme.primary,
+                            borderWidth: 2,
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: colorScheme.primary,
+                                    font: { weight: 'bold' }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#e2e8f0' },
+                                ticks: { color: '#666' }
+                            },
+                            x: {
+                                grid: { color: '#e2e8f0' },
+                                ticks: { color: '#666' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Age Group Chart
+            const ageGroupCanvas = document.getElementById('ageGroupChart');
+            if (ageGroupCanvas && ageAnalysisData && ageAnalysisData.length > 0) {
+                const ageGroupCtx = ageGroupCanvas.getContext('2d');
+                const ageLabels = ageAnalysisData.map(age => age.ageGroup || age.group || 'Unknown');
+                const ageData = ageAnalysisData.map(age => age.totalCases || age.caseCount || age.count || 0);
+
+                ageGroupChart = new Chart(ageGroupCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ageLabels,
+                        datasets: [{
+                            label: 'Cases by Age Group',
+                            data: ageData,
+                            backgroundColor: colorScheme.gradient,
+                            borderColor: colorScheme.primary,
+                            borderWidth: 2,
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: colorScheme.primary,
+                                    font: { weight: 'bold' }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#e2e8f0' },
+                                ticks: { color: '#666' }
+                            },
+                            x: {
+                                grid: { color: '#e2e8f0' },
+                                ticks: { color: '#666' }
+                            }
+                        }
+                    }
+                });
+            }
+
+        } catch (error) {
+            console.error('Error initializing charts:', error);
+        }
+    }
+
+    function switchTimelineView(view) {
+        const buttons = document.querySelectorAll('.chart-card:nth-child(1) .chart-option-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        if (monthlyTrendsChart) {
+            monthlyTrendsChart.config.type = view;
+            monthlyTrendsChart.update();
+        }
+    }
+
+    function switchAbuseTypeView(view) {
+        const buttons = document.querySelectorAll('.chart-card:nth-child(2) .chart-option-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        if (abuseTypesChart) {
+            abuseTypesChart.config.type = view === 'horizontalBar' ? 'bar' : view;
+            if (view === 'horizontalBar') {
+                abuseTypesChart.options.indexAxis = 'y';
+            } else {
+                delete abuseTypesChart.options.indexAxis;
+            }
+            abuseTypesChart.update();
+        }
+    }
+
+    function switchRegionalView(view) {
+        const buttons = document.querySelectorAll('.chart-card:nth-child(3) .chart-option-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        if (regionalChart) {
+            regionalChart.config.type = view === 'horizontalBar' ? 'bar' : view;
+            if (view === 'horizontalBar') {
+                regionalChart.options.indexAxis = 'y';
+            } else {
+                delete regionalChart.options.indexAxis;
+            }
+            regionalChart.update();
+        }
+    }
+
+    // Initialize everything when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM Content Loaded');
+        console.log('Chart.js available:', typeof Chart !== 'undefined');
+
+        // Add a small delay to ensure all elements are rendered
+        setTimeout(function() {
+            console.log('Timeout executed, initializing charts...');
+            initializeCharts();
+        }, 500);
+    });
+</script>
+</body>
+</html>

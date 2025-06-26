@@ -1,0 +1,78 @@
+<!-- assign-authority-modal.html -->
+<div class="modal fade" id="assignAuthorityModal" tabindex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true" th:fragment="addAssignmentModal(caseAssignementRequest)">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assignModalLabel">Assign Case to Authorities</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="assignForm" method="post">
+                    <input type="hidden" id="caseId" name="caseId">
+
+                    <!-- Case Details Section -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h6 class="m-0">Case Details</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Case ID:</strong> <span id="viewCaseId"></span></p>
+                                    <p><strong>Child Name:</strong> <span id="viewChildName"></span></p>
+                                    <p><strong>Abuse Type:</strong> <span id="viewAbuseType"></span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Status:</strong> <span id="viewStatus"></span></p>
+                                    <p><strong>Location:</strong> <span id="viewLocation"></span></p>
+                                    <p><strong>Date Reported:</strong> <span id="viewDateReported"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Authority Assignment Section -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h6 class="m-0">Authority Assignment</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="authorityType">Authority Type</label>
+                                <select class="form-control" id="authorityType" name="authorityType" required>
+                                    <option value="">Select Authority Type</option>
+                                    <option value="POLICE">Police Department</option>
+                                    <option value="SOCIAL_SERVICES">Social Services</option>
+                                    <option value="HEALTHCARE">Healthcare Services</option>
+                                    <option value="EDUCATION">Education Authority</option>
+                                    <option value="LEGAL">Legal Services</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="assignmentNotes">Assignment Notes</label>
+                                <textarea class="form-control" id="assignmentNotes" name="assignmentNotes" rows="3"
+                                          placeholder="Enter any specific instructions or context for this assignment"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="priorityLevel">Priority Level</label>
+                                <select class="form-control" id="priorityLevel" name="priorityLevel" required>
+                                    <option value="HIGH">High - Immediate Attention</option>
+                                    <option value="MEDIUM" selected>Medium - Within 24 Hours</option>
+                                    <option value="LOW">Low - Within 72 Hours</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="confirmAssignBtn">Confirm Assignment</button>
+            </div>
+        </div>
+    </div>
+</div>

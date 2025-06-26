@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARS - Child Abuse Reporting System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Background Styling */
+        body {
+            background: url('/assets/img/homepage.jpeg') no-repeat center center;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Blurred Overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Login Card Styling */
+        .login-container {
+            position: relative;
+            z-index: 2;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            font-weight: bold;
+            color: black;
+        }
+
+        .login-container h5 {
+            color: #0288d1;
+            font-weight: 600;
+        }
+
+        /* Input Fields */
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #0288d1;
+            padding-left: 40px;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 5px rgba(2, 136, 209, 0.5);
+            border-color: #026dae;
+        }
+
+        /* Login Button */
+        .btn-primary {
+            background-color: #0288d1;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: 0.3s;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            background-color: #026dae;
+        }
+
+        /* Sign Up Link */
+        .signup-link {
+            color: #0288d1;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .signup-link:hover {
+            color: #026dae;
+            text-decoration: underline;
+        }
+
+        /* Alert Messages */
+        .alert {
+            font-size: 0.9rem;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        /* Remember Me checkbox */
+        .form-check-input:checked {
+            background-color: #0288d1;
+            border-color: #0288d1;
+        }
+
+        /* Input Group with Icons */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group-text {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: none;
+            border: none;
+            color: #666;
+        }
+
+        .user-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+        }
+
+        /* Links area */
+        .links {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .links a {
+            color: #0288d1;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="overlay"></div>
+<div class="login-container">
+    <h1>CARS</h1>
+    <h5>Child Abuse Reporting System</h5>
+    <p>Enter your credentials to access your account</p>
+
+    <!-- Alert messages for errors/logout -->
+    <div th:if="${param.error}" class="alert alert-danger" role="alert">
+        Invalid username or password.
+    </div>
+    <div th:if="${param.logout}" class="alert alert-success" role="alert">
+        You have been logged out.
+    </div>
+
+    <!-- User Icon -->
+    <img class="user-icon" src="/assets/img/userIcon.jpg" alt="User Icon">
+
+    <!-- Login Form -->
+    <form id="loginForm" action="/process-login" method="post">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text"
+                   class="form-control"
+                   id="username"
+                   name="username"
+                   placeholder="USERNAME"
+                   required>
+        </div>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            <input type="password"
+                   class="form-control"
+                   id="password"
+                   name="password"
+                   placeholder="PASSWORD"
+                   required>
+        </div>
+        <div class="mb-3 text-start">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                <label class="form-check-label" for="remember-me">Remember me</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">LOGIN</button>
+    </form>
+    <div class="links">
+        <a href="forgot-password.html">Forgot Password?</a>
+        <a href="/signup" class="signup-link">Sign Up</a>
+    </div>
+</div>
+
+<!--<script>-->
+<!--    document.getElementById('loginForm').addEventListener('submit', function(e) {-->
+<!--        e.preventDefault();-->
+
+<!--        const username = document.getElementById('username').value;-->
+<!--        const password = document.getElementById('password').value;-->
+
+<!--        // In a real application, you would send these credentials to your server-->
+<!--        console.log('Login attempt:', { username, password });-->
+
+<!--        // For demo purposes, simulate a successful login-->
+<!--        alert('Login successful!');-->
+<!--    });-->
+<!--    // Password Toggle Functionality-->
+<!--    document.getElementById('togglePassword').addEventListener('click', function() {-->
+<!--        const passwordInput = document.getElementById('password');-->
+<!--        const toggleIcon = document.getElementById('togglePassword');-->
+
+<!--        // Toggle password visibility-->
+<!--        if (passwordInput.type === 'password') {-->
+<!--            passwordInput.type = 'text';-->
+<!--            toggleIcon.classList.remove('bi-eye-slash');-->
+<!--            toggleIcon.classList.add('bi-eye');-->
+<!--        } else {-->
+<!--            passwordInput.type = 'password';-->
+<!--            toggleIcon.classList.remove('bi-eye');-->
+<!--            toggleIcon.classList.add('bi-eye-slash');-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

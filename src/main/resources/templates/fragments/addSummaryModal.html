@@ -1,0 +1,90 @@
+<div class="modal fade" id="addSummaryModal" tabindex="-1" aria-labelledby="addSummaryModalLabel" aria-hidden="true" th:fragment="addSummaryModal(caseReport)">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSummaryModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Add Case Summary
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form th:action="@{/cases/addSummary/{caseId}/create(caseId=${caseReport.id})}"
+                  method="post"
+                  th:object="${summaryDto}">
+                <div class="modal-body">
+                    <!-- Hidden Case ID for security -->
+                    <input type="hidden" th:field="*{caseId}" th:value="${caseReport.id}">
+
+                    <div class="row">
+                        <!-- Note Type Selection -->
+                        <div class="col-md-12 mb-3">
+                            <label for="noteType" class="form-label">
+                                Note Type <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" th:field="*{noteType}" id="noteType" required>
+                                <option value="">Select Note Type</option>
+                                <option value="CASE_NOTE">Case Note</option>
+                                <option value="CONTACT_LOG">Contact Log</option>
+                                <option value="ASSESSMENT">Assessment</option>
+                                <option value="INVESTIGATION">Investigation</option>
+                                <option value="SAFETY_PLAN">Safety Plan</option>
+                                <option value="COURT_ORDER">Court Order</option>
+                                <option value="REFERRAL">Referral</option>
+                                <option value="INITIAL_ASSESSMENT">Initial Assessment</option>
+                                <option value="FOLLOW_UP">Follow-up Report</option>
+                                <option value="INCIDENT_UPDATE">Incident Update</option>
+                                <option value="CASE_CLOSURE">Case Closure</option>
+                                <option value="COURT_REPORT">Court Report</option>
+                                <option value="MEDICAL_REPORT">Medical Report</option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('noteType')}" th:errors="*{noteType}"></div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            Description <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" th:field="*{description}" id="description" rows="3"
+                                  placeholder="Provide a brief description of this summary..." required></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                    </div>
+
+                    <!-- Incident Details -->
+                    <div class="mb-3">
+                        <label for="incidentDetails" class="form-label">Incident Details</label>
+                        <textarea class="form-control" th:field="*{incidentDetails}" id="incidentDetails" rows="4"
+                                  placeholder="Detailed information about the incident, observations, and findings..."></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('incidentDetails')}" th:errors="*{incidentDetails}"></div>
+                    </div>
+
+                    <!-- Initial Assessment -->
+                    <div class="mb-3">
+                        <label for="initialAssessment" class="form-label">Initial Assessment</label>
+                        <textarea class="form-control" th:field="*{initialAssessment}" id="initialAssessment" rows="4"
+                                  placeholder="Initial assessment findings, recommendations, and immediate actions taken..."></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('initialAssessment')}" th:errors="*{initialAssessment}"></div>
+                    </div>
+
+                    <!-- Current Updates -->
+                    <div class="mb-3">
+                        <label for="currentUpdates" class="form-label">Current Updates</label>
+                        <textarea class="form-control" th:field="*{currentUpdates}" id="currentUpdates" rows="4"
+                                  placeholder="Current status, recent developments, and ongoing actions..."></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('currentUpdates')}" th:errors="*{currentUpdates}"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Save Summary
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

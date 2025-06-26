@@ -1,0 +1,74 @@
+<div class="modal fade" id="addInterviewModal" tabindex="-1" aria-labelledby="addInterviewModalLabel" aria-hidden="true" th:fragment="addInterviewModal(caseReport)">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addInterviewModalLabel">
+                    <i class="fas fa-microphone-alt me-2"></i>Add Interview
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form th:action="@{/api/v1/interview/{caseId}(caseId=${caseReport.id})}"
+                  method="post"
+                  th:object="${interviewDto}">
+                <div class="modal-body">
+                    <input type="hidden" th:field="*{caseId}" th:value="${caseReport.id}"/>
+
+                    <!-- Interviewee Name -->
+                    <div class="mb-3">
+                        <label for="intervieweeName" class="form-label">
+                            Interviewee Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" th:field="*{intervieweeName}" id="intervieweeName"
+                               placeholder="Enter interviewee's name" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('intervieweeName')}" th:errors="*{intervieweeName}"></div>
+                    </div>
+
+                    <!-- Interviewer Name -->
+                    <div class="mb-3">
+                        <label for="interviewerName" class="form-label">
+                            Interviewer Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" th:field="*{interviewerName}" id="interviewerName"
+                               placeholder="Enter interviewer's name" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('interviewerName')}" th:errors="*{interviewerName}"></div>
+                    </div>
+
+                    <!-- Interview Date -->
+                    <div class="mb-3">
+                        <label for="interviewDate" class="form-label">
+                            Interview Date <span class="text-danger">*</span>
+                        </label>
+                        <input type="datetime-local" class="form-control" th:field="*{interviewDate}" id="interviewDate" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('interviewDate')}" th:errors="*{interviewDate}"></div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" th:field="*{location}" id="location"
+                               placeholder="Interview location">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="mb-3">
+                        <label for="summary" class="form-label">Summary</label>
+                        <textarea class="form-control" th:field="*{summary}" id="summary" rows="4"
+                                  placeholder="Brief summary of the interview..."></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Save Interview
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

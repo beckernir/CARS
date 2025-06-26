@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>CARS - Child Abuse Reporting System</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+
+    <!-- Fonts and icons -->
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["../static/assets/css/fonts.min.css"],
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/plugins.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/kaiadmin.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/sidebar-override.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/navbar-override.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/public-footer.css}" rel="stylesheet" />
+
+    <style>
+        .action-buttons .btn {
+            padding: 6px 12px;
+            margin: 0 3px;
+        }
+        .action-buttons .btn i {
+            font-size: 14px;
+        }
+        .add-report-button {
+            margin-right: auto !important;
+        }
+        .report-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .report-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+        }
+        .report-dropdown-content a {
+            color: black;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+        .report-dropdown-content a:hover {
+            background-color: #f1f1f1;
+            border-radius: 4px;
+        }
+        .report-dropdown:hover .report-dropdown-content {
+            display: block;
+        }
+        .report-tools {
+            margin-left: 10px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .report-tools .btn {
+            margin: 0 5px;
+        }
+        .case-report-dropdown {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 4px;
+            padding: 5px 0;
+        }
+        .case-report-dropdown a {
+            color: black;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+        .case-report-dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+        #print-section {
+            display: none;
+        }
+        @media print {
+            #print-section {
+                display: block;
+            }
+            body * {
+                visibility: hidden;
+            }
+            #print-section, #print-section * {
+                visibility: visible;
+            }
+            #print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+        .badge-abuse-type {
+            padding: 5px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-physical {
+            background-color: #f5365c;
+            color: white;
+        }
+        .badge-emotional {
+            background-color: #fb6340;
+            color: white;
+        }
+        .badge-sexual {
+            background-color: #8965e0;
+            color: white;
+        }
+        .badge-neglect {
+            background-color: #f7b924;
+            color: white;
+        }
+        .badge-other {
+            background-color: #adb5bd;
+            color: white;
+        }
+        .table-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .status-open {
+            background-color: #2dce89;
+        }
+        .status-investigating {
+            background-color: #11cdef;
+        }
+        .status-closed {
+            background-color: #8898aa;
+        }
+        .status-urgent {
+            background-color: #f5365c;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="~{fragments/authority-sidebar :: authority-sidebar}"></div>
+    <div class="main-panel">
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <div class="container">
+            <div class="page-inner">
+                <div class="page-header">
+                    <h3 class="fw-bold mb-3">Case Reports</h3>
+                    <ul class="breadcrumbs mb-3">
+                        <li class="nav-home">
+                            <a href="#">
+                                <i class="icon-home"></i>
+                            </a>
+                        </li>
+                        <li class="separator">
+                            <i class="icon-arrow-right"></i>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#">Reports</a>
+                        </li>
+                        <li class="separator">
+                            <i class="icon-arrow-right"></i>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#">Case Reports</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h4 class="card-title">All Case Reports</h4>
+                                    <!-- Report Generation Tools -->
+                                    <div class="report-tools">
+                                        <div class="report-dropdown">
+                                            <button class="btn btn-success btn-round">
+                                                <i class="fa fa-file-export mr-2"></i>
+                                                Export All
+                                            </button>
+                                            <div class="report-dropdown-content">
+                                                <a href="#" onclick="downloadFilteredCasesReport('PDF'); return false;">
+                                                    <i class="fas fa-file-pdf mr-2"></i>PDF
+                                                </a>
+                                                <a href="#" onclick="downloadFilteredCasesReport('CSV'); return false;">
+                                                    <i class="fas fa-file-csv mr-2"></i>CSV
+                                                </a>
+                                                <a href="#" onclick="downloadFilteredCasesReport('EXCEL'); return false;">
+                                                    <i class="fas fa-file-excel mr-2"></i>Excel
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-info btn-round" onclick="printTable()">
+                                            <i class="fa fa-print mr-2"></i>
+                                            Print
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="caseTable" class="display table table-striped table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>Case ID</th>
+                                            <th>Victim Names</th>
+                                            <th>Abuse Type</th>
+                                            <th>Status</th>
+                                            <th>Location of Incident</th>
+                                            <th>Last Update</th>
+                                            <th style="width: 15%">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="report : ${caseReports}">
+                                            <td th:text="${report.caseId}">CASE-2023-001</td>
+                                            <td th:text="${report.childFullName}">John Doe</td>
+                                            <td>
+                                                <span th:class="${'badge badge-abuse-type badge-' + #strings.toLowerCase(report.abuseType)}"
+                                                      th:text="${report.abuseType}">Physical</span>
+                                            </td>
+                                            <td>
+                                                <span th:class="${'table-status status-' + #strings.toLowerCase(report.status)}"></span>
+                                                <span th:text="${report.status}">Open</span>
+                                            </td>
+                                            <td th:text="${report.locationOfIncident}">123 Main St</td>
+                                            <td th:text="${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}">2023-05-15 14:30</td>
+                                            <td class="action-buttons">
+                                                <!-- Button group to align buttons horizontally -->
+                                                <div class="btn-group" role="group" aria-label="Action buttons">
+                                                    <!-- View Button -->
+                                                    <a class="btn btn-primary btn-sm" th:href="@{/api/v1/authority/view/{id}(id=${report.id})}" title="View">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments/public-footer :: public-footer"></div>
+    </div>
+</div>
+
+<!-- Print Section (Hidden) -->
+<div id="print-section">
+    <div style="padding: 20px;">
+        <h2 style="text-align: center;">Case Reports</h2>
+        <p style="text-align: right; font-size: 12px;">Generated on: <span id="print-date"></span></p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Case ID</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Child Name</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Abuse Type</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Status</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Location</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Date Reported</th>
+            </tr>
+            </thead>
+            <tbody id="print-tbody">
+            <!-- Will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--   Core JS Files   -->
+<script src="../../static/assets/js/core/jquery-3.7.1.min.js"></script>
+<script src="../../static/assets/js/core/popper.min.js"></script>
+<script src="../../static/assets/js/core/bootstrap.min.js"></script>
+
+<!-- jQuery Scrollbar -->
+<script src="../../static/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<!-- Kaiadmin JS -->
+<script src="../../static/assets/js/kaiadmin.min.js"></script>
+<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+<script src="../../static/assets/js/setting-demo2.js"></script>
+
+<!-- SweetAlert2 CSS (optional, for default styling) -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Include DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<!-- Include jQuery and DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script th:inline="none">
+    $(document).ready(function() {
+        $('#caseTable').DataTable({
+            "paging": true,       // Enables pagination
+            "searching": true,    // Enables search box
+            "ordering": true,     // Enables column sorting
+            "info": true,         // Shows info about records
+            "lengthMenu": [5, 10, 25, 50], // Dropdown for entries
+            "pageLength": 5,     // Default entries per page
+            "order": [[6, "desc"]], // Sort by Date Reported (column 6) in descending order
+            "columnDefs": [
+                { "type": "date", "targets": 6 } // Specify that column 6 contains date data
+            ]
+        });
+    });
+</script>
+<script>
+    // Function to download report for filtered/sorted cases
+    function downloadFilteredCasesReport(format) {
+        // Get current DataTable state
+        var table = $('#caseTable').DataTable();
+        var searchValue = table.search();
+        var orderColumn = table.order()[0] ? table.order()[0][0] : null;
+        var orderDirection = table.order()[0] ? table.order()[0][1] : null;
+
+        // Base URL from your controller
+        var baseUrl = '/api/v1/reports/export';
+
+        // Choose endpoint based on format
+        var endpoint;
+        switch(format) {
+            case 'PDF': endpoint = baseUrl + '/pdf'; break;
+            case 'CSV': endpoint = baseUrl + '/csv'; break;
+            case 'EXCEL': endpoint = baseUrl + '/excel'; break;
+            default: endpoint = baseUrl + '/pdf';
+        }
+
+        // Add query parameters for filtering and sorting
+        var queryParams = [];
+        if (searchValue) {
+            queryParams.push('search=' + encodeURIComponent(searchValue));
+        }
+        if (orderColumn !== null && orderDirection) {
+            queryParams.push('orderColumn=' + orderColumn);
+            queryParams.push('orderDirection=' + orderDirection);
+        }
+
+        // Construct final URL
+        var url = endpoint;
+        if (queryParams.length > 0) {
+            url += '?' + queryParams.join('&');
+        }
+
+        // Redirect to the report URL
+        window.location.href = url;
+    }
+
+    // Function to download report for a single case
+    function downloadSingleCaseReport(format, caseId) {
+        if (!caseId) {
+            console.error('Case ID is missing');
+            return false;
+        }
+
+        // Base URL from your controller
+        var baseUrl = '/api/v1/reports/export';
+
+        // Choose endpoint based on format and case ID
+        var url;
+        switch(format) {
+            case 'PDF': url = baseUrl + '/pdf/' + caseId; break;
+            case 'CSV': url = baseUrl + '/csv/' + caseId; break;
+            case 'EXCEL': url = baseUrl + '/excel/' + caseId; break;
+            default: url = baseUrl + '/pdf/' + caseId;
+        }
+
+        // Redirect to the report URL
+        window.location.href = url;
+        return false;
+    }
+
+    // Function to print the table
+    function printTable() {
+        // Copy the table data to the print section
+        var printTbody = document.getElementById('print-tbody');
+        printTbody.innerHTML = '';
+
+        // Get the current visible rows from DataTable
+        var tableRows = $('#caseTable').DataTable().rows({search:'applied'}).nodes();
+
+        // For each row in the table
+        for (var i = 0; i < tableRows.length; i++) {
+            var row = tableRows[i];
+            var printRow = document.createElement('tr');
+
+            // For each cell in the row (except the last one with actions)
+            for (var j = 0; j < row.cells.length - 1; j++) {
+                var cell = document.createElement('td');
+                cell.style.border = '1px solid #ddd';
+                cell.style.padding = '8px';
+                cell.textContent = row.cells[j].textContent.trim();
+                printRow.appendChild(cell);
+            }
+
+            printTbody.appendChild(printRow);
+        }
+
+        // Set the current date and time
+        document.getElementById('print-date').textContent = new Date().toLocaleString();
+
+        // Trigger print dialog
+        window.print();
+    }
+</script>
+</body>
+</html>

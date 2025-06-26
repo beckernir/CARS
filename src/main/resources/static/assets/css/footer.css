@@ -1,0 +1,165 @@
+/* Main Website Variables */
+:root {
+    --primary-color: #0288d1; /* Primary blue - matches the CARS theme */
+    --secondary-color: #3b82f6; /* Medium blue */
+    --accent-color: #026dae; /* Deeper blue - matches CARS hover color */
+    --light-accent: #e0f2fe; /* Light blue background */
+    --text-color: #333333;
+}
+
+/* Footer Specific Styles */
+.footer {
+    background: #f8f9fa;
+    padding: 50px 0 0 0;
+    font-size: 15px;
+    margin-top: auto;
+}
+
+.footer .footer-info .logo {
+    margin-bottom: 30px;
+}
+
+.footer .footer-info .logo span {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.footer .footer-info p {
+    margin-bottom: 30px;
+}
+
+.footer .social-links {
+    margin-top: 30px;
+    display: flex;
+}
+
+.footer .social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--primary-color);
+    color: white;
+    margin-right: 10px;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.footer .social-links a:hover {
+    background: var(--accent-color);
+}
+
+.footer .footer-links h4 {
+    font-size: 16px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 12px;
+    color: var(--primary-color);
+}
+
+.footer .footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer .footer-links ul li {
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.footer .footer-links ul li:first-child {
+    padding-top: 0;
+}
+
+.footer .footer-contact h4 {
+    font-size: 16px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 12px;
+    color: var(--primary-color);
+}
+
+.footer .footer-contact p {
+    line-height: 26px;
+    margin-bottom: 15px;
+}
+
+.footer .copyright {
+    text-align: center;
+    padding: 30px 0 20px 0;
+    border-top: 1px solid #e9ecee;
+    margin-top: 30px;
+}
+
+/* Additional grid classes for footer */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.gy-4 > * {
+    margin-top: 1.5rem;
+}
+
+.col-lg-5, .col-lg-2, .col-lg-3, .col-md-12, .col-md-6 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+@media (min-width: 768px) {
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    .col-md-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    .text-md-start {
+        text-align: left !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .col-lg-2 {
+        flex: 0 0 16.666667%;
+        max-width: 16.666667%;
+    }
+    .col-lg-3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+    .col-lg-5 {
+        flex: 0 0 41.666667%;
+        max-width: 41.666667%;
+    }
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.px-1 {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+}

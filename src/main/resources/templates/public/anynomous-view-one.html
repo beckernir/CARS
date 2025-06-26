@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>CARS - Child Abuse Reporting System</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+
+    <!-- Fonts and icons -->
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["../static/assets/css/fonts.min.css"],
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/plugins.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/kaiadmin.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/public-navbar.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/public-footer.css}" rel="stylesheet" />
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link th:href="@{/assets/css/view-one.css}" rel="stylesheet" />
+
+</head>
+<body>
+<div th:replace="fragments/public-navbar :: public-navbar"></div>
+
+        <!-- Main Content -->
+        <div class="container mb-5">
+            <!-- Case Header -->
+            <div th:replace="~{fragments/case-header :: case-header(caseReport=${caseReport})}"></div>
+
+            <!-- Tabs Navigation -->
+            <div th:replace="~{fragments/tabs-nav :: tabs-nav}"></div>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="caseViewTabContent">
+
+                <div th:replace="fragments/public-overview :: public-overview(summaries=${summaries}, caseReport=${caseReport})"></div>
+
+                <!-- Victim Info Tab -->
+                <div th:replace="~{fragments/victim-info :: victim-info (caseReport=${caseReport})}"></div>
+
+                <!-- Perpetrator Tab -->
+                <div th:replace="~{fragments/abuser-tab :: abuser-tab(interviews=${interviews},caseReport=${caseReport})}"></div>
+
+                <!-- Investigation Tab -->
+                <div th:replace="~{fragments/investigation-tab :: investigation-tab(caseReport=${caseReport})}"></div>
+
+            </div>
+            <!-- Case Lookup Modal -->
+            <div id="caseLookupModal" class="modal" th:fragment="caseLookupModal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <div class="modal-header">
+                        <h2>Case Status Lookup</h2>
+                    </div>
+                    <form id="caseLookupForm" th:action="@{/api/v1/cases/track}" method="post">
+                        <div class="form-group">
+                            <label for="caseIdInput">Enter your Case ID:</label>
+                            <input type="text" id="caseIdInput" name="caseId" class="form-control" placeholder="e.g. CA-20240515-AB12" required th:value="${param.caseId}">
+                            <p th:if="${error}" class="error-message" th:text="${error}" style="display: block;"></p>
+                            <p id="caseIdError" class="error-message" style="display: none;">Please enter a valid Case ID</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="modal-btn lookup-btn">
+                                Look Up Case
+                                <span id="lookupLoader" class="loader" style="display: none;"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+<div th:replace="fragments/public-footer :: public-footer"></div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("caseLookupModal");
+        const openModalLink = document.getElementById("trackProgressLink");
+        const closeBtn = modal.querySelector(".close-modal");
+
+        function openModal() {
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        openModalLink?.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent page jump
+            openModal();
+        });
+
+        closeBtn?.addEventListener("click", closeModal);
+
+        window.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    });
+</script>
+
+
+<script>
+    // Document Ready Function
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap tabs
+        initializeTabs();
+
+        // Initialize form submissions
+        initializeFormSubmissions();
+
+        // Initialize action buttons
+        initializeActionButtons();
+
+        // Initialize tooltips and popovers if needed
+        initializeTooltips();
+
+        // Case status update functionality
+        initializeStatusUpdates();
+
+        // Timeline functionality (if needed)
+        initializeTimeline();
+    });
+
+    // Tab initialization and functionality
+    function initializeTabs() {
+        // Get all tab elements
+        const tabElements = document.querySelectorAll('#caseViewTab .nav-link');
+
+        // Add click event listeners to each tab
+        tabElements.forEach(tab => {
+            tab.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                // Remove active class from all tabs
+                tabElements.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+
+                // Add active class to clicked tab
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+
+                // Hide all tab content
+                const tabContents = document.querySelectorAll('.tab-pane');
+                tabContents.forEach(content => {
+                    content.classList.remove('show', 'active');
+                });
+
+                // Show the selected tab content
+                const targetId = this.getAttribute('data-bs-target').substring(1);
+                const targetContent = document.getElementById(targetId);
+                targetContent.classList.add('show', 'active');
+
+                // Update URL hash for bookmarking (optional)
+                window.location.hash = targetId;
+
+                // Log for audit purposes
+                logUserAction(`Viewed ${targetId} tab`);
+            });
+        });
+
+        // Handle direct URL access with hash
+        if (window.location.hash) {
+            const hash = window.location.hash.substring(1);
+            const tabToActivate = document.querySelector(`[data-bs-target="#${hash}"]`);
+            if (tabToActivate) {
+                tabToActivate.click();
+            }
+        }
+    }
+
+    // Form submission handlers
+    function initializeFormSubmissions() {
+        // Get the investigation note form
+        const noteForm = document.querySelector('.card-header button.btn-primary').closest('.card').querySelector('form');
+
+        // If the form exists (it's not explicitly in the HTML but would be part of the structure)
+        if (noteForm) {
+            noteForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // Get form data
+                const noteType = document.getElementById('noteType').value;
+                const noteTitle = document.getElementById('noteTitle').value;
+                const noteContent = document.getElementById('noteContent').value;
+                const attachFiles = document.getElementById('attachFiles').files;
+
+                // Validate form data
+                if (!noteTitle.trim() || !noteContent.trim()) {
+                    showAlert('Please fill out required fields.', 'danger');
+                    return;
+                }
+
+                // Submit data to server (mock function for demonstration)
+                submitNoteToServer(noteType, noteTitle, noteContent, attachFiles)
+                    .then(response => {
+                        // Clear form
+                        noteForm.reset();
+
+                        // Show success message
+                        showAlert('Note added successfully!', 'success');
+
+                        // Refresh the notes list (could be implemented to add the new note to the DOM)
+                        refreshNotesList();
+                    })
+                    .catch(error => {
+                        console.error('Error submitting note:', error);
+                        showAlert('Error saving note. Please try again.', 'danger');
+                    });
+            });
+        }
+
+        // Add event listener for the Save Note button
+        const saveNoteBtn = document.querySelector('.card-header button.btn-primary');
+        if (saveNoteBtn) {
+            saveNoteBtn.addEventListener('click', function() {
+                // This would trigger the form submit event if there's a form
+                // For now, let's implement direct functionality
+                const noteType = document.getElementById('noteType').value;
+                const noteTitle = document.getElementById('noteTitle').value;
+                const noteContent = document.getElementById('noteContent').value;
+                const attachFiles = document.getElementById('attachFiles').files;
+
+                if (!noteTitle || !noteContent) {
+                    showAlert('Please fill out required fields.', 'danger');
+                    return;
+                }
+
+                // Create a new note entry (mock function)
+                addNewNoteToUI(noteType, noteTitle, noteContent);
+
+                // Clear form fields
+                document.getElementById('noteTitle').value = '';
+                document.getElementById('noteContent').value = '';
+                document.getElementById('attachFiles').value = '';
+
+                showAlert('Note added successfully!', 'success');
+            });
+        }
+    }
+
+    // Initialize various action buttons
+    function initializeActionButtons() {
+        // Get all action buttons
+        const actionButtons = document.querySelectorAll('.card-body .btn');
+
+        // Add click event listeners to each button
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const buttonText = this.textContent.trim();
+
+                switch (buttonText) {
+                    case 'Add Case Note':
+                        // Scroll to the add note form or open a modal
+                        scrollToAddNoteForm();
+                        break;
+
+                    case 'Upload Evidence':
+                        // Open an evidence upload modal or navigate to upload page
+                        openEvidenceUploadModal();
+                        break;
+
+                    case 'Add Authority':
+                        // Open add authority modal
+                        openAddAuthorityModal();
+                        break;
+
+                    case 'Send Message':
+                        // Open messaging interface
+                        openMessagingInterface();
+                        break;
+
+                    case 'Update Status':
+                        // Open status update modal
+                        openStatusUpdateModal();
+                        break;
+
+                    default:
+                        // For other buttons like medical records, interviews, etc.
+                        handleGenericButtonAction(buttonText);
+                        break;
+                }
+
+                // Log for audit purposes
+                logUserAction(`Clicked ${buttonText} button`);
+            });
+        });
+    }
+
+    // Initialize tooltips and popovers
+    function initializeTooltips() {
+        // This would use Bootstrap's JS for tooltips and popovers
+        // For a vanilla JS implementation:
+        const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipElements.forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                // Show tooltip functionality would go here
+                // This is simplified; a real implementation would position tooltips, etc.
+                const tooltipText = this.getAttribute('title') || this.getAttribute('data-bs-original-title');
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip show';
+                tooltip.textContent = tooltipText;
+                document.body.appendChild(tooltip);
+
+                // Position tooltip near the element
+                const rect = this.getBoundingClientRect();
+                tooltip.style.top = `${rect.top - tooltip.offsetHeight - 5}px`;
+                tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+
+                // Store reference to remove later
+                this._tooltip = tooltip;
+            });
+
+            element.addEventListener('mouseleave', function() {
+                // Remove tooltip
+                if (this._tooltip) {
+                    this._tooltip.remove();
+                    delete this._tooltip;
+                }
+            });
+        });
+    }
+
+    // Status update functionality
+    function initializeStatusUpdates() {
+        const statusBadge = document.querySelector('.status-badge');
+        const riskBadge = document.querySelector('.risk-high');
+
+        // If there's a status update button
+        const updateStatusBtn = document.querySelector('button.btn-warning');
+        if (updateStatusBtn) {
+            updateStatusBtn.addEventListener('click', function() {
+                // This would normally open a modal, but for simplicity, let's use a confirm dialog
+                const newStatus = prompt('Enter new status (Under Investigation, Substantiated, Unsubstantiated, Closed):');
+                if (newStatus) {
+                    // Update the status badge
+                    updateCaseStatus(newStatus);
+                }
+            });
+        }
+    }
+
+    // Timeline functionality
+    function initializeTimeline() {
+        // If there's a timeline tab, initialize it
+        const timelineTab = document.getElementById('timeline');
+        if (timelineTab) {
+            // Timeline specific functionality could go here
+            // For example, loading timeline data, sorting functionality, etc.
+        }
+    }
+
+    // Alert display helper function
+    function showAlert(message, type = 'info') {
+        // Create alert element
+        const alertElement = document.createElement('div');
+        alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+        alertElement.setAttribute('role', 'alert');
+        alertElement.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+        // Find a good place to insert the alert
+        const container = document.querySelector('.container');
+        container.insertBefore(alertElement, container.firstChild);
+
+        // Auto dismiss after 5 seconds
+        setTimeout(() => {
+            alertElement.classList.remove('show');
+            setTimeout(() => alertElement.remove(), 150);
+        }, 5000);
+
+        // Add click event to close button
+        const closeButton = alertElement.querySelector('.btn-close');
+        if (closeButton) {
+            closeButton.addEventListener('click', function() {
+                alertElement.classList.remove('show');
+                setTimeout(() => alertElement.remove(), 150);
+            });
+        }
+    }
+
+    // Mock API functions - These would be replaced with actual fetch/API calls
+    function submitNoteToServer(type, title, content, files) {
+        return new Promise((resolve, reject) => {
+            // Simulate API request delay
+            setTimeout(() => {
+                // In a real app, this would be a fetch or axios request
+                console.log('Submitting note to server:', { type, title, content, files });
+                resolve({ success: true, id: Date.now() });
+            }, 500);
+        });
+    }
+
+    function refreshNotesList() {
+        // This would fetch updated notes from the server
+        console.log('Refreshing notes list');
+        // In a real implementation, this would update the DOM with new data
+    }
+
+    function updateCaseStatus(newStatus) {
+        // Get the status badge
+        const statusBadge = document.querySelector('.status-badge');
+        if (statusBadge) {
+            // Remove existing status classes
+            statusBadge.classList.remove('status-investigating', 'status-substantiated', 'status-unsubstantiated', 'status-closed');
+
+            // Set new status class and text
+            switch (newStatus.toLowerCase()) {
+                case 'under investigation':
+                    statusBadge.classList.add('status-investigating');
+                    statusBadge.textContent = 'Under Investigation';
+                    break;
+                case 'substantiated':
+                    statusBadge.classList.add('status-substantiated');
+                    statusBadge.textContent = 'Substantiated';
+                    break;
+                case 'unsubstantiated':
+                    statusBadge.classList.add('status-unsubstantiated');
+                    statusBadge.textContent = 'Unsubstantiated';
+                    break;
+                case 'closed':
+                    statusBadge.classList.add('status-closed');
+                    statusBadge.textContent = 'Closed';
+                    break;
+                default:
+                    statusBadge.classList.add('status-investigating');
+                    statusBadge.textContent = newStatus;
+            }
+
+            // Log the status change
+            logUserAction(`Updated case status to ${newStatus}`);
+
+            // Show confirmation alert
+            showAlert(`Case status updated to: ${newStatus}`, 'success');
+        }
+    }
+
+    // Helper functions for button actions
+    function scrollToAddNoteForm() {
+        const noteForm = document.querySelector('.card-header h3.card-title:contains("Add Investigation Note")');
+        if (noteForm) {
+            noteForm.closest('.card').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    function openEvidenceUploadModal() {
+        showAlert('Evidence upload functionality would open here', 'info');
+        // In a real app, this would open a modal dialog
+    }
+
+    function openAddAuthorityModal() {
+        showAlert('Add authority functionality would open here', 'info');
+        // In a real app, this would open a modal dialog
+    }
+
+    function openMessagingInterface() {
+        showAlert('Messaging interface would open here', 'info');
+        // In a real app, this would open a messaging interface
+    }
+
+    function openStatusUpdateModal() {
+        showAlert('Status update functionality would open here', 'info');
+        // In a real app, this would open a modal dialog
+    }
+
+    function handleGenericButtonAction(buttonText) {
+        showAlert(`Button action for: ${buttonText}`, 'info');
+        // Handle other button actions
+    }
+
+    // Add a new note to the UI (mock function)
+    function addNewNoteToUI(type, title, content) {
+        const notesList = document.querySelector('.list-group.list-group-flush');
+        if (notesList) {
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+
+            // Create new note element
+            const newNote = document.createElement('div');
+            newNote.className = 'list-group-item';
+            newNote.innerHTML = `
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">${title}</h5>
+                <small class="text-muted">${formattedDate}</small>
+            </div>
+            <p class="mb-1">${content}</p>
+            <small class="text-muted">Note Type: ${type} | Added by: Current User</small>
+        `;
+
+            // Add to the top of the list
+            notesList.insertBefore(newNote, notesList.firstChild);
+        }
+    }
+
+    // Audit logging function
+    function logUserAction(action) {
+        // In a real app, this would send logs to a server
+        console.log(`User Action: ${action} at ${new Date().toISOString()}`);
+    }
+</script>
+</body>
+</html>
