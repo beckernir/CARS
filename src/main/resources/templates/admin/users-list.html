@@ -134,17 +134,6 @@
                                             <td th:text="${user.email}"></td>
                                             <td th:text="${user.gender}"></td>
                                             <td th:text="${user.role}"></td>
-                                            <!-- Delete Button -->
-<!--                                            <td class="action-buttons">-->
-<!--&lt;!&ndash;                                                <a class="btn btn-danger btn-sm" th:href="@{/api/v1/admin/users/delete/{id}(id=${user.userId})}" onclick="return confirmDelete(event, this.href)" title="Delete">&ndash;&gt;-->
-<!--&lt;!&ndash;                                                    <i class="fas fa-trash-alt"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                                                </a>&ndash;&gt;-->
-<!--                                                <a class="btn btn-danger btn-sm" th:href="@{/api/v1/admin/users/delete/{id}(id=${user.userId})}"-->
-<!--                                                   th:attr="onclick='return confirmDelete(event, this.href)'" title="Delete">-->
-<!--                                                    <i class="fas fa-trash-alt"></i>-->
-<!--                                                </a>-->
-
-<!--                                            </td>-->
                                             <td class="action-buttons">
                                                 <a class="btn btn-danger btn-sm delete-btn"
                                                    th:href="@{/api/v1/admin/users/delete/{id}(id=${user.userId})}"

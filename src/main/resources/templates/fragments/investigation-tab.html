@@ -30,9 +30,6 @@
                                     <div class="evidence-details">
                                         <p><strong>Video Evidence:</strong> <span class="evidence-status-available">Available</span></p>
                                         <p><strong>Source:</strong> Cloudinary</p>
-<!--                                        <p><strong>Uploaded:</strong>-->
-<!--                                            <span th:text="${caseReport.reportDate != null ? T(java.time.format.DateTimeFormatter).ofPattern('dd MMM yyyy HH:mm').format(caseReport.reportDate) : 'N/A'}">26 May 2025 14:30</span>-->
-<!--                                        </p>-->
                                         <p><strong>File Type:</strong> Video</p>
                                         <div class="btn-group-vertical w-100">
                                             <a th:href="${caseReport.videoReportPath}" class="btn btn-sm btn-primary mb-1" target="_blank">
@@ -77,9 +74,6 @@
                                     <div class="evidence-details">
                                         <p><strong>Audio Evidence:</strong> <span class="evidence-status-available">Available</span></p>
                                         <p><strong>Source:</strong> Cloudinary</p>
-<!--                                        <p><strong>Uploaded:</strong>-->
-<!--                                            <span th:text="${caseReport.reportDate != null ? T(java.time.format.DateTimeFormatter).ofPattern('dd MMM yyyy HH:mm').format(caseReport.reportDate) : 'N/A'}">26 May 2025 14:30</span>-->
-<!--                                        </p>-->
                                         <p><strong>File Type:</strong> Audio Recording</p>
                                         <div class="btn-group-vertical w-100">
                                             <a th:href="${caseReport.voiceReportPath}" class="btn btn-sm btn-primary mb-1" target="_blank">
@@ -166,9 +160,6 @@
                                                 <span th:case="*">Document</span>
                                             </span>
                                         </p>
-<!--                                        <p><strong>Uploaded:</strong>-->
-<!--                                            <span th:text="${caseReport.reportDate != null ? T(java.time.format.DateTimeFormatter).ofPattern('dd MMM yyyy HH:mm').format(caseReport.reportDate) : 'N/A'}">26 May 2025 14:30</span>-->
-<!--                                        </p>-->
                                         <div class="btn-group-vertical w-100">
                                             <a th:href="${caseReport.evidenceFilePath}" class="btn btn-sm btn-primary mb-1" target="_blank">
                                                 <i class="fas fa-eye me-1"></i>View Document
@@ -269,10 +260,6 @@
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-center">
                                         <i class="fas fa-calendar-alt fa-lg text-primary me-3"></i>
-<!--                                        <div>-->
-<!--                                            <strong>Case Created:</strong><br>-->
-<!--                                            <span class="text-muted" th:text="${caseReport.reportDate != null ? T(java.time.format.DateTimeFormatter).ofPattern('EEEE, dd MMMM yyyy').format(caseReport.reportDate) : 'N/A'}">Monday, 26 May 2025</span>-->
-<!--                                        </div>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">

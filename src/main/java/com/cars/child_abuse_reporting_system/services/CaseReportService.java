@@ -2,6 +2,7 @@ package com.cars.child_abuse_reporting_system.services;
 
 import com.cars.child_abuse_reporting_system.dtos.*;
 import com.cars.child_abuse_reporting_system.entities.CaseReport;
+import com.cars.child_abuse_reporting_system.entities.User;
 import com.cars.child_abuse_reporting_system.enums.AbuseType;
 import com.cars.child_abuse_reporting_system.enums.CaseStatus;
 import com.cars.child_abuse_reporting_system.exceptions.CaseNotFoundException;
@@ -9,6 +10,7 @@ import com.cars.child_abuse_reporting_system.exceptions.FileProcessingException;
 import com.cars.child_abuse_reporting_system.exceptions.InvalidRequestException;
 import com.cars.child_abuse_reporting_system.exceptions.ResourceNotFoundException;
 import com.cars.child_abuse_reporting_system.repositories.CaseReportRepository;
+import com.cars.child_abuse_reporting_system.repositories.UserRepository;
 import com.cars.child_abuse_reporting_system.utils.CaseIdGeneratorService;
 import com.cars.child_abuse_reporting_system.utils.FileStorageService;
 import com.cars.child_abuse_reporting_system.utils.GeoLocationService;
@@ -36,19 +38,23 @@ public class CaseReportService {
     private final GeoLocationService geoLocationService;
     private final CaseReportRepository caseReportRepository;
     private final TranslationService translationService;
+    private final UserRepository userRepository;
+    private final EmailService emailService;
 
     public CaseReportService(CaseReportRepository reportRepository,
                              CaseIdGeneratorService caseIdGeneratorService,
                              FileStorageService fileStorageService,
                              GeoLocationService geoLocationService,
                              CaseReportRepository caseReportRepository,
-                             TranslationService translationService) {
+                             TranslationService translationService, UserRepository userRepository, EmailService emailService) {
         this.reportRepository = reportRepository;
         this.caseIdGeneratorService = caseIdGeneratorService;
         this.fileStorageService = fileStorageService;
         this.geoLocationService = geoLocationService;
         this.caseReportRepository = caseReportRepository;
         this.translationService = translationService;
+        this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     public List<CaseReport> getAll(){
@@ -94,9 +100,57 @@ public class CaseReportService {
         if (isEmergencySituation(reportDTO)) {
             notifyEmergencyServices(savedReport);
         }
+        notifyAdminsOfNewReport();
 
         return caseId;
     }
+
+    public void notifyAdminsOfNewReport() {
+        List<User> admins = userRepository.findByRole("ADMIN");
+
+        for (User admin : admins) {
+            sendNewReportNotificationEmail(admin.getEmail(), admin.getFirstName());
+        }
+    }
+
+    private void sendNewReportNotificationEmail(String email, String firstName) {
+        String htmlTemplate = String.format(
+                "<!DOCTYPE html>" +
+                        "<html lang=\"en\">" +
+                        "<head>" +
+                        "<meta charset=\"UTF-8\" />" +
+                        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />" +
+                        "<title>New Child Abuse Report</title>" +
+                        "<link href=\"https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap\" rel=\"stylesheet\" />" +
+                        "</head>" +
+                        "<body style=\"font-family: 'Lato', sans-serif; background-color: #F2F8FC; padding: 20px;\">" +
+                        "<div style=\"max-width: 600px; margin: auto; background: #FFFFFF; border: 1px solid #D1E3F8; border-radius: 8px; padding: 20px;\">" +
+                        "<div style=\"text-align: center; margin-bottom: 20px;\">" +
+                        "<img src=\"https://www.auca.ac.rw/images/auca-logo.png\" alt=\"AUCA Logo\" style=\"width: 150px;\"/>" +
+                        "</div>" +
+                        "<h1 style=\"font-size: 20px; color: #003366;\">Hi %s,</h1>" +
+                        "<p>A new <strong>child abuse report</strong> has been submitted to the AUCA Case Management System. Immediate attention and review is required.</p>" +
+                        "<p>Please log into the system as soon as possible and take the appropriate action.</p>" +
+                        "<div style=\"text-align: center;\">" +
+                        "<a href=\"#\" style=\"display: inline-block; margin-top: 15px; padding: 10px 20px; background: #003366; color: #FFFFFF; text-decoration: none; border-radius: 5px;\">Review Report</a>" +
+                        "</div>" +
+                        "<p style=\"margin-top: 30px; color: #666666; font-size: 14px;\">For support, contact the system administrator or the HR department.</p>" +
+                        "<p style=\"color: #999999; font-size: 12px; text-align: center;\">&copy; 2025 AUCA Case Management System. All rights reserved.</p>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>",
+                firstName
+        );
+
+        SendEmailDto emailDto = SendEmailDto.builder()
+                .to(email)
+                .subject("New Child Abuse Report Submitted – Immediate Action Required")
+                .body(htmlTemplate)
+                .build();
+
+        emailService.sendEmail(emailDto);
+    }
+
 
     /**
      * Retrieve a case report by its unique case ID
@@ -358,48 +412,6 @@ public class CaseReportService {
             throw new FileProcessingException("Failed to process and upload files: " + e.getMessage(), e);
         }
     }
-//    public Mono<CaseReport> saveReportWithTranslation(CaseReport report, String targetLanguage) {
-//        // Save original report first
-//        CaseReport savedReport = reportRepository.save(report);
-//
-//        // If target language is different from original, translate
-//        if (!targetLanguage.equals(report.getOriginalLanguage())) {
-//            return translationService.translateText(
-//                            report.getOriginalDescription(),
-//                            report.getOriginalLanguage(),
-//                            targetLanguage
-//                    )
-//                    .map(translatedText -> {
-//                        savedReport.setTranslatedDescription(translatedText);
-//                        savedReport.setTranslatedLanguage(targetLanguage);
-//                        return reportRepository.save(savedReport);
-//                    })
-//                    .onErrorReturn(savedReport); // Return original if translation fails
-//        }
-//
-//        return Mono.just(savedReport);
-//    }
-//
-//    public Mono<String> translateExistingReport(Long reportId, String targetLanguage) {
-//        return reportRepository.findById(reportId)
-//                .map(report -> {
-//                    if (report.getOriginalDescription() == null) {
-//                        return Mono.just("No description to translate");
-//                    }
-//
-//                    return translationService.translateText(
-//                            report.getOriginalDescription(),
-//                            report.getOriginalLanguage(),
-//                            targetLanguage
-//                    ).map(translatedText -> {
-//                        report.setTranslatedDescription(translatedText);
-//                        report.setTranslatedLanguage(targetLanguage);
-//                        reportRepository.save(report);
-//                        return translatedText;
-//                    });
-//                })
-//                .orElse(Mono.error(new RuntimeException("Report not found")));
-//    }
     /**
      * Get database ID by public case ID
      * This method converts the public-facing case ID (e.g., CA-20240515-AB12)
@@ -409,12 +421,6 @@ public class CaseReportService {
         if (publicCaseId == null || publicCaseId.trim().isEmpty()) {
             return null;
         }
-
-//        // Clean and validate the case ID format
-//        String cleanCaseId = publicCaseId.trim().toUpperCase();
-//        if (!isValidCaseIdFormat(cleanCaseId)) {
-//            return null;
-//        }
 
         try {
             Optional<CaseReport> caseReport = caseReportRepository.findByCaseId(publicCaseId);

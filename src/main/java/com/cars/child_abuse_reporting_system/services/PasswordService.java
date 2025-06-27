@@ -43,45 +43,6 @@ public class PasswordService {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
-
-//    // Forgot password - send reset token
-//    public void forgotPassword(ForgotPasswordRequest request) {
-//        User user = userRepository.findByEmail(request.getEmail())
-//                .orElseThrow(() -> new RuntimeException("User not found with email: " + request.getEmail()));
-//
-//        // Generate reset token
-//        String resetToken = generateResetToken();
-//        user.setResetToken(resetToken);
-//        user.setResetTokenExpiry(LocalDateTime.now().plusHours(24)); // 24 hours expiry
-//
-//        userRepository.save(user);
-//
-//        // Send email with reset link
-//        String resetLink = "http://localhost:8080/reset-password?token=" + resetToken;
-//        emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
-//    }
-//
-//    // Reset password using token
-//    public void resetPassword(ResetPasswordRequest request) {
-//        User user = userRepository.findByResetToken(request.getToken())
-//                .orElseThrow(() -> new RuntimeException("Invalid reset token"));
-//
-//        // Check if token is expired
-//        if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
-//            throw new RuntimeException("Reset token has expired");
-//        }
-//
-//        // Validate new password
-//        validatePassword(request.getNewPassword());
-//
-//        // Update password and clear reset token
-//        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-//        user.setResetToken(null);
-//        user.setResetTokenExpiry(null);
-//
-//        userRepository.save(user);
-//    }
-
     private String generateResetToken() {
         return UUID.randomUUID().toString();
     }

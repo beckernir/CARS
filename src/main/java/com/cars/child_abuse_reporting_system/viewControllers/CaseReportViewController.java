@@ -223,20 +223,6 @@ public class CaseReportViewController {
         model.addAttribute("caseReports", cows);
         return "/tables/admin-case-report-list"; // Thymeleaf template "list.html"
     }
-//    @PostMapping("/track")
-//    public String lookupCase(@RequestParam("caseId") String caseId, RedirectAttributes redirectAttributes) {
-//        Optional<CaseReport> foundCase = Optional.ofNullable(caseReportService.getReportByCaseId(caseId));
-//
-//        if (foundCase.isPresent()) {
-//            // Redirect to view page with internal DB ID
-//            return "redirect:/api/v1/cases/view/" + foundCase.get().getId();
-//        } else {
-//            // Redirect back with error
-//            redirectAttributes.addFlashAttribute("error", "Case not found. Please check the Case ID.");
-//            return "redirect:/api/v1/cases/confirm"; // Change to the page containing the modal
-//        }
-//    }
-
     @PostMapping("/track")
     public String lookupCase(@RequestParam("caseId") String caseId, RedirectAttributes redirectAttributes) {
         try {
@@ -307,86 +293,5 @@ public class CaseReportViewController {
 
         return "/public/anynomous-view-one";
     }
-//    @GetMapping("/lookup")
-//    public String showCaseLookup(Model model) {
-//        model.addAttribute("caseLookupForm", new CaseLookupForm());
-//        return "case-lookup";
-//    }
-
-//    @PostMapping("/lookup")
-//    public String lookupCase(@Valid @ModelAttribute("caseLookupForm") CaseLookupForm form,
-//                             BindingResult bindingResult,
-//                             Model model,
-//                             RedirectAttributes redirectAttributes) {
-//
-//        if (bindingResult.hasErrors()) {
-//            return "confirmationAbuseReport";
-//        }
-//
-//        try {
-//            // First, get the database ID from the public case ID
-//            Long databaseId = caseReportService.getDatabaseIdByPublicCaseId(form.getCaseId());
-//
-//            if (databaseId == null) {
-//                model.addAttribute("errorMessage", "Case ID not found. Please check and try again.");
-//                return "confirmationAbuseReport";
-//            }
-//
-//            // Redirect to case details page with both IDs
-//            redirectAttributes.addAttribute("caseId", form.getCaseId());
-//            redirectAttributes.addAttribute("id", databaseId);
-//            return "redirect:/api/v1/cases/case/details";
-//
-//        } catch (Exception e) {
-//            model.addAttribute("errorMessage", "An error occurred while looking up the case. Please try again later.");
-//            return "confirmationAbuseReport";
-//        }
-//    }
-
-//    @GetMapping("/details")
-//    public String showCaseDetails(@RequestParam("caseId") String publicCaseId,
-//                                  @RequestParam("id") Long databaseId,
-//                                  Model model,
-//                                  RedirectAttributes redirectAttributes) {
-//
-//        try {
-//            CaseReport caseReport = caseReportService.getCaseReportById(databaseId);
-//
-//            if (caseReport == null) {
-//                redirectAttributes.addFlashAttribute("errorMessage", "Case not found.");
-//                return "redirect:/case/lookup";
-//            }
-//
-//            // Verify that the public case ID matches
-//            if (!publicCaseId.equals(caseReport.getCaseId())) {
-//                redirectAttributes.addFlashAttribute("errorMessage", "Invalid case access.");
-//                return "redirect:/case/lookup";
-//            }
-//
-//            model.addAttribute("caseReport", caseReport);
-//            model.addAttribute("publicCaseId", publicCaseId);
-//
-//            return "case-details";
-//
-//        } catch (Exception e) {
-//            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while retrieving case details.");
-//            return "redirect:/case/lookup";
-//        }
-//    }
 }
 
-//// Form class for case lookup
-//class CaseLookupForm {
-//    @NotBlank(message = "Case ID is required")
-//    @Pattern(regexp = "^[A-Z]{2}-\\d{8}-[A-Z0-9]{4}$",
-//            message = "Please enter a valid Case ID format (e.g., CA-20240515-AB12)")
-//    private String caseId;
-//
-//    public String getCaseId() {
-//        return caseId;
-//    }
-//
-//    public void setCaseId(String caseId) {
-//        this.caseId = caseId != null ? caseId.trim().toUpperCase() : null;
-//    }
-//}

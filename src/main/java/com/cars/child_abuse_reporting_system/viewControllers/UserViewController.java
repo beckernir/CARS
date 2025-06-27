@@ -111,13 +111,6 @@ public class UserViewController {
         profileRequest.setLastName(user.getLastName());
         profileRequest.setEmail(user.getEmail());
         profileRequest.setPhoneNumber(user.getPhoneNumber());
-//        profileRequest.setBio(user.getBio());
-//        profileRequest.setJobTitle(user.getJobTitle());
-//        profileRequest.setCompany(user.getCompany());
-//        profileRequest.setDepartment(user.getDepartment());
-//        profileRequest.setExperience(user.getExperience());
-//        profileRequest.setSkills(user.getSkills());
-
         model.addAttribute("user", user);
         model.addAttribute("profileUpdateRequest", profileRequest);
         model.addAttribute("pageTitle", "Edit Profile");
