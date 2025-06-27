@@ -16,4 +16,5 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     List<Interview> findByInterviewerNameContainingIgnoreCase(String interviewerName);
 
     List<Interview> findByIntervieweeNameContainingIgnoreCase(String intervieweeName);
+
 }

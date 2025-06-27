@@ -150,6 +150,7 @@ public class AdminViewController {
 
         return "/admin/view-one";
     }
+
     /**
      * Display the list of cows.
      */
@@ -159,6 +160,7 @@ public class AdminViewController {
         model.addAttribute("caseReports", cows);
         return "/admin/admin-case-report-list";
     }
+
     /**
      * Display form for submitting a new case report
      */

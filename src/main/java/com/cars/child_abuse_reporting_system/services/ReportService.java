@@ -55,8 +55,8 @@ public class ReportService {
     }
 
     // Generate PDF report for single case
-    public byte[] generateSingleCasePdfReport(String caseId) throws IOException {
-        Optional<CaseReport> caseReport = caseReportRepository.findByCaseId(caseId);
+    public byte[] generateSingleCasePdfReport(Long caseId) throws IOException {
+        Optional<CaseReport> caseReport = caseReportRepository.findById(caseId);
         if (caseReport.isPresent()) {
             List<CaseReport> cases = List.of(caseReport.get());
             return createPdfReport(cases, "Case Report - " + caseId);
@@ -65,8 +65,8 @@ public class ReportService {
     }
 
     // Generate CSV report for single case
-    public byte[] generateSingleCaseCsvReport(String caseId) throws IOException {
-        Optional<CaseReport> caseReport = caseReportRepository.findByCaseId(caseId);
+    public byte[] generateSingleCaseCsvReport(Long caseId) throws IOException {
+        Optional<CaseReport> caseReport = caseReportRepository.findById(caseId);
         if (caseReport.isPresent()) {
             List<CaseReport> cases = List.of(caseReport.get());
             return createCsvReport(cases);
@@ -75,8 +75,8 @@ public class ReportService {
     }
 
     // Generate Excel report for single case
-    public byte[] generateSingleCaseExcelReport(String caseId) throws IOException {
-        Optional<CaseReport> caseReport = caseReportRepository.findByCaseId(caseId);
+    public byte[] generateSingleCaseExcelReport(Long caseId) throws IOException {
+        Optional<CaseReport> caseReport = caseReportRepository.findById(caseId);
         if (caseReport.isPresent()) {
             List<CaseReport> cases = List.of(caseReport.get());
             return createExcelReport(cases, "Case Report - " + caseId);

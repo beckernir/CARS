@@ -51,6 +51,101 @@
             <!-- Case Header -->
             <div th:replace="~{fragments/case-header :: case-header(caseReport=${caseReport})}"></div>
 
+            <div class="dropdown-container">
+                <!-- Report Download Dropdown -->
+                <div class="dropdown report-dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="reportDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download me-2"></i>Download Report
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="reportDropdown">
+                        <li>
+                            <a class="dropdown-item" href="#"
+                               th:onclick="'downloadSingleCaseReport(\'PDF\', ' + ${caseId} + '); return false;'"
+                               onclick="downloadReport('PDF')">
+                                <i class="fas fa-file-pdf"></i>PDF Format
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"
+                               th:onclick="'downloadSingleCaseReport(\'CSV\', ' + ${caseReport.id} + '); return false;'"
+                               onclick="downloadReport('CSV')">
+                                <i class="fas fa-file-csv"></i>CSV Format
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"
+                               th:onclick="'downloadSingleCaseReport(\'EXCEL\', ' + ${caseReport.id} + '); return false;'"
+                               onclick="downloadReport('EXCEL')">
+                                <i class="fas fa-file-excel"></i>Excel Format
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Status Change Dropdown -->
+                <div class="dropdown status-dropdown">
+                    <button class="btn dropdown-toggle" type="button"
+                            id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-exchange-alt me-2"></i>Change Status
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="statusDropdown">
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="REPORTED" onclick="selectStatus('REPORTED')">
+                                <i class="fas fa-flag"></i>Reported
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="ASSIGNED" onclick="selectStatus('ASSIGNED')">
+                                <i class="fas fa-user-tag"></i>Assigned
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="INVESTIGATING" onclick="selectStatus('INVESTIGATING')">
+                                <i class="fas fa-search"></i>Investigating
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="RESOLVED" onclick="selectStatus('RESOLVED')">
+                                <i class="fas fa-check-circle"></i>Resolved
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="CLOSED" onclick="selectStatus('CLOSED')">
+                                <i class="fas fa-times-circle"></i>Closed
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Status Change Modal for Confirmation -->
+            <div class="modal fade" id="statusChangeModal" tabindex="-1" aria-labelledby="statusChangeModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="statusChangeModalLabel">Confirm Status Change</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to change the status of Case #<span id="modalCaseId"></span> to <strong id="modalNewStatus"></strong>?</p>
+                            <div class="mb-3">
+                                <label for="statusChangeReason" class="form-label">Reason for status change (optional):</label>
+                                <textarea class="form-control" id="statusChangeReason" rows="3" placeholder="Enter reason for status change..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="confirmStatusChange" onclick="confirmStatusChange()">Confirm Change</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tabs Navigation -->
             <div th:replace="~{fragments/tabs-nav :: tabs-nav}"></div>
 
@@ -79,7 +174,269 @@
 
 <!-- Bootstrap JS Bundle (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let selectedStatus = '';
+    let caseId = '';
+    let modal = null;
 
+    // Function to handle status selection (called by onclick)
+    function selectStatus(status) {
+        console.log('selectStatus function called with:', status);
+
+        // Add a visible alert to confirm the function is being called
+        if (!status) {
+            console.error('No status provided to selectStatus function');
+            showAlert('No status selected. Please try again.', 'error');
+            return;
+        }
+
+        // Get current status from the status badge
+        const statusBadge = document.getElementById('statusBadge');
+        let currentStatus = '';
+        if (statusBadge) {
+            currentStatus = statusBadge.textContent.trim().toUpperCase();
+            console.log('Current status from badge:', currentStatus);
+        } else {
+            console.error('Status badge not found');
+        }
+
+        // Don't allow changing to the same status
+        if (status === currentStatus) {
+            const message = 'Case is already in ' + status.toLowerCase() + ' status.';
+            console.log(message);
+            showAlert(message, 'warning');
+            return;
+        }
+
+        // Get case ID from the span element
+        const caseIdElement = document.getElementById('caseIdSpan');
+        if (caseIdElement) {
+            caseId = caseIdElement.textContent.trim();
+            console.log('Case ID extracted:', caseId);
+        } else {
+            console.error('Case ID element not found');
+            showAlert('Unable to determine case ID. Please refresh the page and try again.', 'error');
+            return;
+        }
+
+        // Validate we have a case ID
+        if (!caseId) {
+            showAlert('Unable to determine case ID. Please refresh the page and try again.', 'error');
+            return;
+        }
+
+        selectedStatus = status;
+
+        // Initialize modal if not already done
+        if (!modal) {
+            const modalElement = document.getElementById('statusChangeModal');
+            if (modalElement) {
+                modal = new bootstrap.Modal(modalElement);
+            } else {
+                console.error('Modal element not found');
+                showAlert('Modal not found. Please refresh the page and try again.', 'error');
+                return;
+            }
+        }
+
+        // Update modal content
+        const modalCaseId = document.getElementById('modalCaseId');
+        const modalNewStatus = document.getElementById('modalNewStatus');
+        const statusChangeReason = document.getElementById('statusChangeReason');
+
+        if (modalCaseId) modalCaseId.textContent = caseId;
+        if (modalNewStatus) modalNewStatus.textContent = status.toLowerCase().replace('_', ' ');
+        if (statusChangeReason) statusChangeReason.value = '';
+
+        // Show modal
+        modal.show();
+    }
+
+    // Function to confirm status change (called by onclick)
+    function confirmStatusChange() {
+        console.log('Confirming status change...');
+
+        if (!selectedStatus || !caseId) {
+            console.error('Missing data:', { selectedStatus, caseId });
+            showAlert('Invalid case or status information.', 'error');
+            return;
+        }
+
+        const confirmButton = document.getElementById('confirmStatusChange');
+        const statusChangeReason = document.getElementById('statusChangeReason');
+
+        if (!confirmButton) {
+            console.error('Confirm button not found');
+            return;
+        }
+
+        // Show loading state
+        confirmButton.disabled = true;
+        confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Updating...';
+
+        // Prepare request data
+        const requestData = {
+            caseId: caseId,
+            newStatus: selectedStatus,
+            reason: statusChangeReason ? statusChangeReason.value.trim() : ''
+        };
+
+        console.log('Sending request:', requestData);
+        const apiUrl = `/api/v1/case-reports/${caseId}/status`;
+
+        // Make API call to update status
+        fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+            .then(response => {
+                console.log('Response received:', response.status, response.statusText);
+
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        console.error('Error response body:', text);
+                        throw new Error(`HTTP ${response.status}: ${text}`);
+                    });
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success response:', data);
+
+                // Update the status badge
+                updateStatusBadge(selectedStatus);
+
+                // Hide modal and show success message
+                modal.hide();
+                showAlert('Case status updated successfully to ' + selectedStatus.toLowerCase().replace('_', ' ') + '.', 'success');
+            })
+            .catch(error => {
+                console.error('API Error:', error);
+                showAlert('Failed to update case status: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Reset button state
+                confirmButton.disabled = false;
+                confirmButton.innerHTML = 'Confirm Change';
+            });
+    }
+
+    // Function to update status badge
+    function updateStatusBadge(newStatus) {
+        const statusBadge = document.getElementById('statusBadge');
+        if (!statusBadge) {
+            console.error('Status badge not found');
+            return;
+        }
+
+        console.log('Updating status badge to:', newStatus);
+
+        statusBadge.textContent = newStatus.replace('_', ' ');
+
+        // Remove old status classes
+        statusBadge.className = statusBadge.className.replace(/status-\w+/g, '');
+
+        // Add new status class
+        statusBadge.classList.add('status-' + newStatus);
+    }
+
+    // Function to show alerts
+    function showAlert(message, type) {
+        console.log('Showing alert:', type, message);
+
+        // Remove any existing alerts first
+        const existingAlerts = document.querySelectorAll('.alert');
+        existingAlerts.forEach(alert => alert.remove());
+
+        // Create alert element
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+        // Insert alert at the top of the card
+        const cardBody = document.querySelector('.case-info-card .card-body');
+        if (cardBody) {
+            cardBody.insertBefore(alertDiv, cardBody.firstChild);
+        } else {
+            // Fallback: insert at top of body
+            document.body.insertBefore(alertDiv, document.body.firstChild);
+        }
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            if (alertDiv && alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing...');
+
+        // Check if required elements exist
+        const caseIdElement = document.getElementById('caseIdSpan');
+        const statusBadge = document.getElementById('statusBadge');
+        const modalElement = document.getElementById('statusChangeModal');
+
+        if (!caseIdElement) console.error('Case ID element not found');
+        if (!statusBadge) console.error('Status badge element not found');
+        if (!modalElement) console.error('Modal element not found');
+
+        // Add event listeners to dropdown items as backup
+        const dropdownItems = document.querySelectorAll('.status-option');
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const status = this.getAttribute('data-status');
+                console.log('Dropdown item clicked:', status);
+                selectStatus(status);
+            });
+        });
+
+        console.log('Initialization complete, found', dropdownItems.length, 'dropdown items');
+    });
+
+    // Global function to make it accessible from onclick
+    window.selectStatus = selectStatus;
+    window.confirmStatusChange = confirmStatusChange;
+</script>
+
+
+<script>
+    // Function to download report for a single case
+    function downloadSingleCaseReport(format, caseId) {
+        if (!caseId) {
+            console.error('Case ID is missing');
+            return false;
+        }
+
+        // Base URL from your controller
+        var baseUrl = '/api/v1/reports/export';
+
+        // Choose endpoint based on format and case ID
+        var url;
+        switch(format) {
+            case 'PDF': url = baseUrl + '/comprehensive/pdf/' + caseId; break;
+            case 'CSV': url = baseUrl + '/comprehensive/csv/' + caseId; break;
+            case 'EXCEL': url = baseUrl + '/comprehensive/excel/' + caseId; break;
+            default: url = baseUrl + '/comprehensive/pdf/' + caseId;
+        }
+
+        // Redirect to the report URL
+        window.location.href = url;
+        return false;
+    }
+</script>
 <script>
     // Document Ready Function
     document.addEventListener('DOMContentLoaded', function() {

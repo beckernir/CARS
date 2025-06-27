@@ -50,6 +50,73 @@
             <!-- Case Header -->
             <div th:replace="~{fragments/case-header :: case-header(caseReport=${caseReport})}"></div>
 
+            <div class="dropdown-container">
+                <!-- Report Download Dropdown -->
+                <div class="dropdown report-dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="reportDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download me-2"></i>Download Report
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="reportDropdown">
+                        <li>
+                            <a class="dropdown-item" href="#"
+                               th:onclick="'downloadSingleCaseReport(\'PDF\', ' + ${caseId} + '); return false;'"
+                               onclick="downloadReport('PDF')">
+                                <i class="fas fa-file-pdf"></i>PDF Format
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"
+                               th:onclick="'downloadSingleCaseReport(\'CSV\', ' + ${caseReport.id} + '); return false;'"
+                               onclick="downloadReport('CSV')">
+                                <i class="fas fa-file-csv"></i>CSV Format
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Status Change Dropdown -->
+                <div class="dropdown status-dropdown">
+                    <button class="btn dropdown-toggle" type="button"
+                            id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-exchange-alt me-2"></i>Change Status
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="statusDropdown">
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="REPORTED" onclick="selectStatus('REPORTED')">
+                                <i class="fas fa-flag"></i>Reported
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="ASSIGNED" onclick="selectStatus('ASSIGNED')">
+                                <i class="fas fa-user-tag"></i>Assigned
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="INVESTIGATING" onclick="selectStatus('INVESTIGATING')">
+                                <i class="fas fa-search"></i>Investigating
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="RESOLVED" onclick="selectStatus('RESOLVED')">
+                                <i class="fas fa-check-circle"></i>Resolved
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item status-option" type="button"
+                                    data-status="CLOSED" onclick="selectStatus('CLOSED')">
+                                <i class="fas fa-times-circle"></i>Closed
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
             <!-- Tabs Navigation -->
             <div th:replace="~{fragments/tabs-nav :: tabs-nav}"></div>
 
@@ -74,6 +141,33 @@
 </div>
 <!-- Bootstrap JS Bundle (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    // Function to download report for a single case
+    function downloadSingleCaseReport(format, caseId) {
+        if (!caseId) {
+            console.error('Case ID is missing');
+            return false;
+        }
+
+        // Base URL from your controller
+        var baseUrl = '/api/v1/reports/export';
+
+        // Choose endpoint based on format and case ID
+        var url;
+        switch(format) {
+            case 'PDF': url = baseUrl + '/comprehensive/pdf/' + caseId; break;
+            case 'CSV': url = baseUrl + '/comprehensive/csv/' + caseId; break;
+            case 'EXCEL': url = baseUrl + '/comprehensive/excel/' + caseId; break;
+            default: url = baseUrl + '/comprehensive/pdf/' + caseId;
+        }
+
+        // Redirect to the report URL
+        window.location.href = url;
+        return false;
+    }
+</script>
 
 <script>
     // Document Ready Function

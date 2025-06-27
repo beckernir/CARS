@@ -764,6 +764,30 @@
         </div>
     </div>
 
+    <!-- Case Lookup Modal -->
+    <div id="caseLookupModal" class="modal" th:fragment="caseLookupModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2>Case Status Lookup</h2>
+            </div>
+            <form id="caseLookupForm" th:action="@{/api/v1/cases/track}" method="post">
+                <div class="form-group">
+                    <label for="caseIdInput">Enter your Case ID:</label>
+                    <input type="text" id="caseIdInput" name="caseId" class="form-control" placeholder="e.g. CA-20240515-AB12" required th:value="${param.caseId}">
+                    <p th:if="${error}" class="error-message" th:text="${error}" style="display: block;"></p>
+                    <p id="caseIdError" class="error-message" style="display: none;">Please enter a valid Case ID</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="modal-btn lookup-btn">
+                        Look Up Case
+                        <span id="lookupLoader" class="loader" style="display: none;"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 <!-- Footer -->
 <footer class="footer">
@@ -815,6 +839,80 @@
         </div>
     </div>
 </footer>
+
+<script>
+    // Modal functionality - Pure Thymeleaf approach (NO AJAX)
+    const modal = document.getElementById("caseLookupModal");
+    const btn = document.getElementById("lookupCaseBtn");
+    const closeBtn = document.querySelector(".close-modal");
+    const form = document.getElementById("caseLookupForm");
+    const caseIdInput = document.getElementById("caseIdInput");
+    const caseIdError = document.getElementById("caseIdError");
+    const loader = document.getElementById("lookupLoader");
+
+    // Check if there's an error and show modal automatically
+    document.addEventListener("DOMContentLoaded", function() {
+        // Show modal if there's a Thymeleaf error (user was redirected back with error)
+        const thymeleafError = document.querySelector('p[th\\:if="${error}"]');
+        if (thymeleafError && thymeleafError.textContent.trim() !== '') {
+            modal.style.display = "flex";
+        }
+
+        // Pre-populate case ID if one was just created
+        const currentCaseId = document.querySelector(".case-id");
+        if (currentCaseId && !caseIdInput.value) {
+            caseIdInput.value = currentCaseId.textContent.trim();
+        }
+    });
+
+    // Open modal
+    btn.onclick = function() {
+        modal.style.display = "flex";
+        // Clear any previous client-side errors when opening modal manually
+        caseIdError.style.display = 'none';
+    }
+
+    // Close modal when clicking X
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+        resetForm();
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+            resetForm();
+        }
+    }
+
+    // Reset form and errors
+    function resetForm() {
+        caseIdError.style.display = "none";
+        // Don't hide Thymeleaf errors as they need to persist
+    }
+
+    // Form submission with client-side validation only
+    form.addEventListener("submit", function(e) {
+        const caseId = caseIdInput.value.trim();
+
+        if (!caseId) {
+            e.preventDefault();
+            caseIdError.innerText = "Please enter a Case ID";
+            caseIdError.style.display = "block";
+            return false;
+        }
+
+        // Hide client-side error if input is provided
+        caseIdError.style.display = "none";
+
+        // Show loader for visual feedback
+        loader.style.display = "inline-block";
+
+        // Let the form submit normally to the server (Thymeleaf handles the rest)
+        return true;
+    });
+</script>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         // Form validation

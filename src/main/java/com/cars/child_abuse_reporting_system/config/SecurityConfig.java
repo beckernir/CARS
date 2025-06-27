@@ -31,7 +31,8 @@ public class SecurityConfig {
                                 "/",
                                 "/api/v1/users/**",
                                 "/api/v1/cases/**",
-                                "/api/v1/case-reports/**"
+                                "/api/v1/case-reports/**",
+                                "/api/v1/reports/export/**"
                         ).permitAll()
 
                         // Role-based dashboard access

@@ -55,24 +55,6 @@ public class PublicViewController {
         this.interviewService = interviewService;
     }
 
-    //    private Long getUserIdFromAuthentication(Authentication authentication) {
-//        // This depends on your authentication setup
-//        // Example implementations:
-//
-//        // If using custom UserDetails:
-//         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//         return ((CustomUserDetailsService) userDetails).();
-//
-////         If using JWT with user ID in subject:
-////         return Long.parseLong(authentication.getName());
-//
-////         If using Spring Security with user ID as principal:
-//         return (Long) authentication.getPrincipal();
-//
-//        // Placeholder - replace with your actual implementation
-//        return Long.parseLong(authentication.getName());
-//    }
-//
 private String addUserDataToModel(Authentication authentication) {
     String username = "";
     if (authentication != null && authentication.isAuthenticated()) {
@@ -139,7 +121,7 @@ private String addUserDataToModel(Authentication authentication) {
 
         if (caseReportOpt.isEmpty()) {
             // Handle case not found - redirect to dashboard or show error
-            return "redirect:/api/v1/admin/dashboard";
+            return "redirect:/api/v1/public/allCases";
         }
 
         CaseReport caseReport = caseReportOpt.get();

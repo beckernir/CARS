@@ -65,12 +65,12 @@ public class HomeViewController {
     @GetMapping("/admin-dashboard")
     public String adminDashboard(Model model, Authentication authentication) {
         addUserDataToModel(model, authentication);
-        return "/admin/admin-case-report-list";
+        return "/admin/admin-dashboard";
     }
 
     @GetMapping("/public-dashboard")
     public String publicWorkerDashboard() {
-        return "/public/user-dashboard";
+        return "/public/my-cases";
     }
 
     @GetMapping("/authority-dashboard")
@@ -89,7 +89,7 @@ public class HomeViewController {
 
             // Redirect based on role
             if (role.equals("ROLE_ADMIN")) {
-                return "redirect:/admin-dashboard";
+                return "redirect:/api/v1/admin/dashboard";
 
             } else if (role.equals("ROLE_POLICE_OFFICER")) {
                 return "redirect:/api/v1/authority/allCases";
@@ -101,7 +101,7 @@ public class HomeViewController {
                 return "redirect:/api/v1/authority/allCases";
 
             } else if (role.equals("ROLE_PUBLIC")) {
-                return "redirect:/public-dashboard";
+                return "redirect:/api/v1/public/allCases";
 
             }
         }
