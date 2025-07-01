@@ -1,6 +1,7 @@
 package com.cars.child_abuse_reporting_system.viewControllers;
 
 import com.cars.child_abuse_reporting_system.dtos.CaseReportDTO;
+import com.cars.child_abuse_reporting_system.dtos.EvidenceUploadRequest;
 import com.cars.child_abuse_reporting_system.dtos.InterviewDTO;
 import com.cars.child_abuse_reporting_system.dtos.SummaryDTO;
 import com.cars.child_abuse_reporting_system.entities.CaseReport;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
@@ -44,6 +46,34 @@ public class CaseReportViewController {
         this.caseReportService = caseReportService;
         this.summaryService = summaryService;
         this.interviewService = interviewService;
+    }
+    @PostMapping("/evidence/upload/{id}")
+    public String handleFileUpload(@PathVariable("id") Long caseId,
+                                   @RequestParam("file") MultipartFile file,
+                                   RedirectAttributes redirectAttributes) {
+        if (!file.isEmpty()) {
+            // Save file logic here (you can pass caseId to link evidence with the case)
+            redirectAttributes.addFlashAttribute("message", "Evidence uploaded successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Please select a file to upload.");
+        }
+        return "redirect:/api/v1/cases/view/" + caseId;
+    }
+    /**
+     * Handle evidence upload (Form submission)
+     */
+    @PostMapping("/upload/{caseId}")
+    public String uploadEvidence(@PathVariable Long caseId,
+                                 @Valid @ModelAttribute EvidenceUploadRequest request,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            caseReportService.uploadEvidence(caseId, request);
+            redirectAttributes.addFlashAttribute("success", "Evidence uploaded successfully!");
+            return "redirect:/api/v1/cases/" + caseId + "?tab=investigation";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to upload evidence: " + e.getMessage());
+            return "redirect:/api/v1/cases/upload/" + caseId;
+        }
     }
 
     /**

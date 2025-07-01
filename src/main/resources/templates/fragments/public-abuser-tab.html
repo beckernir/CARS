@@ -1,4 +1,4 @@
-<div class="tab-pane fade" id="perpetrator" role="tabpanel" aria-labelledby="perpetrator-tab" th:fragment="abuser-tab(interviews,caseReport)">
+<div class="tab-pane fade" id="perpetrator" role="tabpanel" aria-labelledby="perpetrator-tab" th:fragment="public-abuser-tab(interviews,caseReport)">
     <div class="row">
         <div class="col-md-8">
             <div class="card case-info-card">
@@ -11,12 +11,6 @@
                     <div class="mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h4 class="section-title mb-0">Interview Summary</h4>
-                            <button type="button"
-                                    class="btn btn-primary btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#addInterviewModal">
-                                <i class="fas fa-plus"></i> Add Interview
-                            </button>
                         </div>
 
                         <!-- Success/Error Messages -->
@@ -37,7 +31,6 @@
                                 <div class="text-muted">
                                     <i class="fas fa-clipboard-list fa-2x mb-2"></i>
                                     <p class="mb-0">No interviews have been conducted yet.</p>
-                                    <small>Click "Add Interview" to record the first interview.</small>
                                 </div>
                             </div>
 
@@ -96,26 +89,6 @@
                                                         Updated: <span th:text="${#temporals.format(interview.updatedAt, 'MM dd, yyyy ''at'' hh:mm a')}"></span>
                                                     </small>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <!-- Action buttons -->
-                                        <div class="mt-3">
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <button type="button"
-                                                        class="btn btn-outline-info"
-                                                        data-bs-toggle="collapse"
-                                                        th:data-bs-target="'#fullSummary' + ${interview.id}">
-                                                    <i class="fas fa-expand-alt"></i> View Details
-                                                </button>
-
-                                                <form th:action="@{/interviews/{id}/delete(id=${interview.id})}"
-                                                      method="post"
-                                                      style="display: inline-block;"
-                                                      onsubmit="return confirm('Are you sure you want to delete this interview? This action cannot be undone.')">
-                                                    <button type="submit" class="btn btn-outline-danger">
-                                                        <i class="fas fa-trash"></i> Delete
-                                                    </button>
-                                                </form>
                                             </div>
                                         </div>
 

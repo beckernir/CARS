@@ -5,6 +5,7 @@ import com.cars.child_abuse_reporting_system.entities.CaseReport;
 import com.cars.child_abuse_reporting_system.entities.User;
 import com.cars.child_abuse_reporting_system.enums.AbuseType;
 import com.cars.child_abuse_reporting_system.enums.CaseStatus;
+import com.cars.child_abuse_reporting_system.enums.Role;
 import com.cars.child_abuse_reporting_system.exceptions.CaseNotFoundException;
 import com.cars.child_abuse_reporting_system.exceptions.FileProcessingException;
 import com.cars.child_abuse_reporting_system.exceptions.InvalidRequestException;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -106,7 +108,7 @@ public class CaseReportService {
     }
 
     public void notifyAdminsOfNewReport() {
-        List<User> admins = userRepository.findByRole("ADMIN");
+        List<User> admins = userRepository.findByRole(Role.ADMIN);
 
         for (User admin : admins) {
             sendNewReportNotificationEmail(admin.getEmail(), admin.getFirstName());
@@ -174,6 +176,19 @@ public class CaseReportService {
         return reportRepository.findAll(pageable);
     }
 
+    /**
+     * Upload evidence for a case
+     */
+    public CaseReport uploadEvidence(Long caseId, EvidenceUploadRequest request) throws Exception {
+        CaseReport caseReport = caseReportRepository.findById(caseId)
+                .orElseThrow(() -> new RuntimeException("Case not found with ID: " + caseId));
+        // Process and validate evidence file
+        if (request.getEvidenceFile() != null && !request.getEvidenceFile().isEmpty()) {
+            String evidenceUrl = fileStorageService.processEvidenceFile(request.getEvidenceFile());
+            caseReport.setEvidenceFilePath(evidenceUrl);
+        }
+        return caseReportRepository.save(caseReport);
+    }
     /**
      * Update an existing case report
      * @param caseId The unique case ID

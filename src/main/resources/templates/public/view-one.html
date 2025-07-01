@@ -74,46 +74,6 @@
                         </li>
                     </ul>
                 </div>
-
-                <!-- Status Change Dropdown -->
-                <div class="dropdown status-dropdown">
-                    <button class="btn dropdown-toggle" type="button"
-                            id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-exchange-alt me-2"></i>Change Status
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="statusDropdown">
-                        <li>
-                            <button class="dropdown-item status-option" type="button"
-                                    data-status="REPORTED" onclick="selectStatus('REPORTED')">
-                                <i class="fas fa-flag"></i>Reported
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item status-option" type="button"
-                                    data-status="ASSIGNED" onclick="selectStatus('ASSIGNED')">
-                                <i class="fas fa-user-tag"></i>Assigned
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item status-option" type="button"
-                                    data-status="INVESTIGATING" onclick="selectStatus('INVESTIGATING')">
-                                <i class="fas fa-search"></i>Investigating
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item status-option" type="button"
-                                    data-status="RESOLVED" onclick="selectStatus('RESOLVED')">
-                                <i class="fas fa-check-circle"></i>Resolved
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item status-option" type="button"
-                                    data-status="CLOSED" onclick="selectStatus('CLOSED')">
-                                <i class="fas fa-times-circle"></i>Closed
-                            </button>
-                        </li>
-                    </ul>
-                </div>
             </div>
 
 
@@ -129,7 +89,7 @@
                 <div th:replace="~{fragments/victim-info :: victim-info (caseReport=${caseReport})}"></div>
 
                 <!-- Perpetrator Tab -->
-                <div th:replace="~{fragments/abuser-tab :: abuser-tab(interviews=${interviews},caseReport=${caseReport})}"></div>
+                <div th:replace="~{fragments/public-abuser-tab :: public-abuser-tab(interviews=${interviews},caseReport=${caseReport})}"></div>
 
                 <!-- Investigation Tab -->
                 <div th:replace="~{fragments/investigation-tab :: investigation-tab(caseReport=${caseReport})}"></div>

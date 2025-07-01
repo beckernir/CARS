@@ -33,5 +33,5 @@ public interface UserRepository extends JpaRepository<User,String> {
     @Query("SELECT u.role, COUNT(u) FROM User u GROUP BY u.role")
     List<Object[]> countUsersByRole();
 
-    List<User> findByRole(String admin);
+    List<User> findByRole(Role admin);
 }
